@@ -4296,10 +4296,14 @@ function readRouteTab() {
   let q = "";
   try { q = (new URLSearchParams(location.search).get("tab") || "").trim().toLowerCase(); } catch (e) {}
   if (ROUTE_TABS.includes(q)) return q;
-  let h = "";
-  try { h = String(location.hash || "").replace(/^#!?\/?/, "").split(/[?&]/)[0].trim().toLowerCase(); } catch (e) {}
-  if (ROUTE_TABS.includes(h)) return h;
-  return "";
+  return readHashTab();
+}
+
+function readHashTab() {
+  try {
+    const h = String(location.hash || "").replace(/^#!?\/?/, "").split(/[?&]/)[0].trim().toLowerCase();
+    return ROUTE_TABS.includes(h) ? h : "";
+  } catch (e) { return ""; }
 }
 
 /* 지금 화면이 가리키는 전용 주소 이름 */
@@ -4432,6 +4436,11 @@ function init() {
   const routeTab = readRouteTab();
   if (routeTab) applyRoute(routeTab);
   routeReady = true;
+  // 이미 열린 페이지에서 주소 끝의 #asil · #molit · #card 만 바뀌면 그 화면으로 이동
+  window.addEventListener("hashchange", () => {
+    const h = readHashTab();
+    if (h) applyRoute(h);
+  });
   // 폰트 로딩 후 한 번 더 (한글 폰트 메트릭 차이 보정)
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => renderCard()).catch(() => {});
