@@ -532,16 +532,16 @@
             <div class="f" style="width:150px">
               <label class="lbl">범위</label>
               <select id="apiMonths">
-                <option value="1">해당 월</option>
-                <option value="2">최근 2개월</option>
                 <option value="3" selected>최근 3개월</option>
-                <option value="6">최근 6개월</option>
-                <option value="12">최근 1년(12개월)</option>
+                <option value="12">최근 1년</option>
+                <option value="36">최근 3년</option>
+                <option value="60">최근 5년</option>
+                <option value="120">최근 10년</option>
                 <option value="custom">기간 직접 지정</option>
               </select>
             </div>
             <div class="f grow" id="customRangeRow" hidden>
-              <label class="lbl">시작월 ~ 끝월 (최대 24개월)</label>
+              <label class="lbl">시작월 ~ 끝월 (최대 120개월)</label>
               <div class="mrange">
                 <input type="month" id="apiFromYm" aria-label="시작월">
                 <span class="dash">~</span>
@@ -549,12 +549,13 @@
               </div>
             </div>
             <button class="btn primary" id="btnFetch" style="height:38px">불러오기</button>
+            <button class="btn ghost" id="btnStopFetch" type="button" style="height:38px" hidden>중단</button>
           </div>
           <div class="range-hint" id="rangeHint" hidden></div>
           <div class="status" id="apiStatus"></div>
           <div class="note" style="margin-top:9px">
             국토교통부 아파트 매매 실거래가(상세) · 해제된 거래는 자동 제외 · 직거래는 자동 표시<br>
-            <span class="mini">일 10,000회 한도(범위 1개월 = 1회 호출, 1년이면 12회) · API 키는 이 페이지 코드에 넣지 않고 <b>이 브라우저(localStorage)에만</b> 저장합니다. 다른 기기에서는 다시 입력하세요.</span>
+            <span class="mini">일 10,000회 한도(범위 1개월 = 1회 호출, 3년이면 36회 · 10년이면 120회) · 3년· 5년·10년은 시간이 걸러므로 <b>중단</b>으로 멈힐 수 있습니다 · API 키는 이 페이지 코드에 넣지 않고 <b>이 브라우저(localStorage)에만</b> 저장합니다.</span>
           </div>
         </div>
 
@@ -852,6 +853,14 @@
           <div class="afilters">
             <div class="af">
               <span class="lbl">기간</span>
+              <select id="aPeriod" aria-label="기간">
+                <option value="3">최근 3개월</option>
+                <option value="12" selected>최근 1년</option>
+                <option value="36">최근 3년</option>
+                <option value="60">최근 5년</option>
+                <option value="120">최근 10년</option>
+                <option value="custom">직접 지정</option>
+              </select>
               <input type="month" id="aFrom" aria-label="시작월">
               <span class="dash">~</span>
               <input type="month" id="aTo" aria-label="끝월">
@@ -874,6 +883,7 @@
               </select>
             </div>
           </div>
+          <div class="range-hint" id="aRangeNote" hidden></div>
           <p class="asil-note" style="margin-top:9px">
             아실 <b>[동/호 실거래가]</b> 화면 그대로입니다. 매매·전세·월세를 한 표에서 같이 볼 수 있고, 동·면적·기간으로 좁힐 수 있습니다. <span class="mini" id="aSourceNote"></span>
           </p>
@@ -946,16 +956,16 @@
         <div class="f" style="width:150px">
           <label class="lbl">기간</label>
           <select id="sMonths">
-            <option value="1">해당 월</option>
-            <option value="2">최근 2개월</option>
             <option value="3" selected>최근 3개월</option>
-            <option value="6">최근 6개월</option>
-            <option value="12">최근 12개월</option>
+            <option value="12">최근 1년</option>
+            <option value="36">최근 3년</option>
+            <option value="60">최근 5년</option>
+            <option value="120">최근 10년</option>
             <option value="custom">기간 직접 지정</option>
           </select>
         </div>
         <div class="f grow" id="sCustomRow" hidden>
-          <label class="lbl">시작월 ~ 끝월 (최대 24개월)</label>
+          <label class="lbl">시작월 ~ 끝월 (최대 120개월)</label>
           <div class="mrange">
             <input type="month" id="sFromYm" aria-label="시작월">
             <span class="dash">~</span>
@@ -963,12 +973,13 @@
           </div>
         </div>
         <button class="btn primary" id="sRun" style="height:38px">불러오기</button>
+        <button class="btn ghost" id="sStop" type="button" style="height:38px" hidden>중단</button>
       </div>
       <div class="range-hint" id="sRangeHint" hidden></div>
       <div class="status" id="sStatus"></div>
       <div class="note" style="margin-top:9px">
         매매는 <b>동 · 등기 여부</b>까지, 전월세는 <b>계약구분(신규/갱신)</b>까지 국토교통부 공개자료 그대로 보여 줍니다.<br>
-        <span class="mini">API 키는 이 브라우저에만 저장 · 기간 1개월 = 1회 호출 · 전월세는 국토부 정책상 동 정보가 제공되지 않습니다.</span>
+        <span class="mini">API 키는 이 브라우저에만 저장 · 기간 1개월 = 1회 호출(3년 36회 · 10년 120회) · 긴 범위는 <b>중단</b>으로 멈힐 수 있음 · 전월세는 국토부 정책상 동 정보가 제공되지 않습니다.</span>
       </div>
     </div>
   </section>
@@ -2178,7 +2189,7 @@ function loadLocal() {
     if (api) {
       if (api.code) $("#apiCode").value = api.code;
       if (api.ym) $("#apiYm").value = api.ym;
-      if (api.months) $("#apiMonths").value = api.months;
+      if (api.months && $("#apiMonths").querySelector(`option[value="${String(api.months).replace(/[^0-9a-z]/gi, "")}"]`)) $("#apiMonths").value = api.months;
       if (typeof api.from === "string" && api.from) $("#apiFromYm").value = api.from;
       if (typeof api.to === "string" && api.to) $("#apiToYm").value = api.to;
       if (typeof api.kw === "string") $("#apiKw").value = api.kw;
@@ -2318,7 +2329,7 @@ function parseAny(text) {
 }
 
 /* ============================ 데이터 적용 ============================ */
-const MAX_DEALS = 12000;        // 한 번에 담아 둘 수 있는 최대 건수(1년 전체 조회 ~5,500건 수용)
+const MAX_DEALS = 60000;        // 한 번에 담아 둘 수 있는 최대 건수(10년 범위까지 수용 — 목록은 300행씩 그린다)
 const LIST_CHUNK = 300;         // 목록은 300행씩 그린다(휴대폰 렌더 부담 줄이기)
 let listCap = LIST_CHUNK;
 function resetListCap() { listCap = LIST_CHUNK; }
@@ -2352,7 +2363,17 @@ function applyDeals(list, opt) {
 }
 
 /* ============================ API ============================ */
-const MAX_RANGE_MONTHS = 24;   // 한 번에 조회할 수 있는 최대 기간(개월)
+const MAX_RANGE_MONTHS = 120;  // 한 번에 조회할 수 있는 최대 기간(개월 · 최대 10년)
+const RANGE_PRESETS = [3, 12, 36, 60, 120];
+let sStop = false;             // 조회 화면(2번 탭) 중단 요청
+let apiStop = false;           // 카드 생성기 조회 중단 요청
+/* 개월 수를 읽기 좋은 이름으로: 12 → 1년, 36 → 3년 */
+function ymSpanName(n) {
+  const fixed = { 1: "1개월", 3: "3개월", 6: "6개월", 12: "1년", 24: "2년", 36: "3년", 60: "5년", 120: "10년" };
+  if (fixed[n]) return fixed[n];
+  if (n % 12 === 0) return `${n / 12}년`;
+  return `${n}개월`;
+}
 function ymList(ym, months) {
   const y = parseInt(ym.slice(0, 4), 10), m = parseInt(ym.slice(4, 6), 10);
   const out = [];
@@ -2459,7 +2480,7 @@ function subtitleForRange(r) {
   }
   if (r.mode === "custom") return `${ymLabelShort(r.from)}~${ymLabelShort(r.to)} 주요 거래`;
   if (r.months === 12) return "최근 1년 주요 거래";
-  return `최근 ${r.months}개월 주요 거래`;
+  return `최근 ${ymSpanName(r.months)} 주요 거래`;
 }
 
 async function fetchApi() {
@@ -2481,13 +2502,17 @@ async function fetchApi() {
   }
 
   const btn = $("#btnFetch");
+  const stopBtn = $("#btnStopFetch");
   const place = PRESETS.find(p => p.code === code)?.name || code;
   btn.disabled = true; btn.textContent = "불러오는 중…";
+  apiStop = false;
+  if (stopBtn) { stopBtn.hidden = false; stopBtn.disabled = false; }
 
   const all = [];
-  let canceled = 0, lastErr = null;
+  let canceled = 0, lastErr = null, stopped = false;
   const failed = [], skipped = [];
   for (let i = 0; i < range.list.length; i++) {
+    if (apiStop) { stopped = true; break; }
     const m = range.list[i];
     const step = range.list.length > 1 ? ` · (${i + 1}/${range.list.length}개월)` : "";
     btn.textContent = range.list.length > 1 ? `불러오는 중… ${i + 1}/${range.list.length}` : "불러오는 중…";
@@ -2509,6 +2534,8 @@ async function fetchApi() {
     if (netFail) break;
   }
   btn.disabled = false; btn.textContent = "불러오기";
+  if (stopBtn) stopBtn.hidden = true;
+  if (stopped) range.stopped = true;
 
   if (!all.length) {
     const corsLike = lastErr && (lastErr instanceof TypeError);
@@ -2545,7 +2572,8 @@ async function fetchApi() {
   parts.push(`<b>${res.applied}건</b>을 불러왔습니다${notes.length ? ` (${notes.join(" · ")})` : ""}. 최근 계약 ${state.deals.filter(d => d.selected).length}건이 기본 선택되어 있습니다.`);
   if (list.length > MAX_DEALS) parts.push(`<br><b>${list.length.toLocaleString("ko-KR")}건 중 최근 ${MAX_DEALS.toLocaleString("ko-KR")}건만 담았습니다.</b> 기간을 줄이거나 단지명 필터로 좁혀 주세요.`);
   if (failed.length) parts.push(`<br>${failed.length}개월(${failed.map(ymLabelShort).join(", ")})은 응답을 받지 못했${skipped.length ? `고, 네트워크 문제로 남은 ${skipped.length}개월은 건너뛰었` : ""}습니다.`);
-  setStatus("#apiStatus", parts.join(""), failed.length || list.length > MAX_DEALS ? "err" : "ok");
+  if (range.stopped) parts.push(`<br><b>중단했습니다.</b> 중단 전까지 받은 ${all.length.toLocaleString("ko-KR")}건으로 표를 만들었습니다.`);
+  setStatus("#apiStatus", parts.join(""), failed.length || list.length > MAX_DEALS ? "err" : (range.stopped ? "info" : "ok"));
 }
 
 /* ============================ PNG / 복사 ============================ */
@@ -2655,6 +2683,12 @@ function bind() {
 
   // API
   $("#btnFetch").addEventListener("click", fetchApi);
+  const stopFetch = $("#btnStopFetch");
+  if (stopFetch) stopFetch.addEventListener("click", () => {
+    apiStop = true;
+    stopFetch.disabled = true;
+    setStatus("#apiStatus", "중단하는 중… 지금 받고 있는 달까지만 받고 멈춥니다.", "info");
+  });
   $("#apiKw").addEventListener("input", () => { renderSavedFilters(); saveLocal(); });
   // 조회 조건(지역·년월·범위)이 바뀌면 예전에 불러온 거래를 필터 재적용에 쓰지 않는다
   ["#apiCode", "#apiYm"].forEach(sel => $(sel).addEventListener("input", () => { state.apiPool = []; }));
@@ -3268,7 +3302,7 @@ function loadSearch() {
       if (STYPE_LABEL[o.type]) sstate.type = o.type;
       if (/^\d{5}$/.test(String(o.code || ""))) sstate.code = String(o.code);
       if (/^\d{6}$/.test(String(o.ym || ""))) sstate.ym = String(o.ym);
-      if (["1", "2", "3", "6", "12", "custom"].includes(String(o.months))) sstate.months = String(o.months);
+      if (["3", "12", "36", "60", "120", "custom"].includes(String(o.months))) sstate.months = String(o.months);
       if (/^\d{6}$/.test(String(o.from || ""))) sstate.from = String(o.from);
       if (/^\d{6}$/.test(String(o.to || ""))) sstate.to = String(o.to);
       if (typeof o.kw === "string") sstate.kw = o.kw;
@@ -3286,7 +3320,7 @@ function sRangeLabel(r) {
   if (r.months === 1) return `${r.to.slice(0, 4)}년 ${parseInt(r.to.slice(4, 6), 10)}월`;
   if (r.mode === "custom") return `${ymLabelShort(r.from)}~${ymLabelShort(r.to)}`;
   if (r.months === 12) return "최근 1년";
-  return `최근 ${r.months}개월`;
+  return `최근 ${ymSpanName(r.months)}`;
 }
 function sSyncCustom() {
   const on = $("#sMonths").value === "custom";
@@ -3364,12 +3398,16 @@ async function sRun() {
   sstate.code = code;
   const kind = sIsRent() ? "rent" : "trade";
   const btn = $("#sRun");
+  const stopBtn = $("#sStop");
   btn.disabled = true;
+  sStop = false;
+  if (stopBtn) { stopBtn.hidden = false; stopBtn.disabled = false; }
   const all = [];
   const failed = [];
-  let canceled = 0, truncated = 0, lastErr = null;
+  let canceled = 0, truncated = 0, lastErr = null, stopped = false;
   const total = range.list.length;
   for (let i = 0; i < total; i++) {
+    if (sStop) { stopped = true; break; }
     const ym = range.list[i];
     const tag = total > 1 ? ` (${i + 1}/${total}개월)` : "";
     btn.textContent = total > 1 ? `불러오는 중 ${i + 1}/${total}` : "불러오는 중";
@@ -3377,6 +3415,7 @@ async function sRun() {
     try {
       let page = 1, got = 0, tot = 0, again = true;
       while (again && page <= 6) {
+        if (sStop) break;
         const p = await sFetchPage(kind, code, ym, page, key);
         all.push(...p.rows);
         canceled += p.canceled || 0;
@@ -3394,11 +3433,15 @@ async function sRun() {
   }
   btn.disabled = false;
   btn.textContent = "불러오기";
+  if (stopBtn) stopBtn.hidden = true;
+  if (!stopped && sStop) stopped = true;
 
   if (!all.length) {
-    setStatus("#sStatus", failed.length
+    setStatus("#sStatus", stopped
+      ? "중단했습니다. 받은 거래가 없어 표를 비워 둡니다."
+      : failed.length
       ? `거래를 받지 못했습니다. ${esc((lastErr && lastErr.message) || "")}`
-      : `조건에 맞는 ${STYPE_LABEL[sstate.type]} 거래가 없습니다. 기간을 넓히거나 지역코드를 확인해 주세요.`, "err");
+      : `조건에 맞는 ${STYPE_LABEL[sstate.type]} 거래가 없습니다. 기간을 넓히거나 지역코드를 확인해 주세요.`, stopped ? "info" : "err");
     return;
   }
   all.forEach(r => { r.id = "s" + (sIdSeq++); });
@@ -3417,10 +3460,11 @@ async function sRun() {
   if (canceled) notes.push(`해제 ${canceled}건 제외`);
   if (truncated) notes.push(`${truncated.toLocaleString("ko-KR")}건은 한도로 못 받음`);
   if (failed.length) notes.push(`${failed.length}개월 실패(${failed.map(ymLabelShort).join(", ")})`);
+  if (stopped) notes.push("중단함");
   setStatus("#sStatus",
     `<b>${all.length.toLocaleString("ko-KR")}건</b>을 불러왔습니다${notes.length ? ` (${notes.join(" · ")})` : ""}.` +
     (sIsRent() ? " 전월세는 동 정보가 없어 <b>계약구분</b>으로 봅니다." : " 위 <b>동</b> 칩으로 동별 시세를 볼 수 있습니다."),
-    failed.length || truncated ? "err" : "ok");
+    failed.length || truncated ? "err" : (stopped ? "info" : "ok"));
 }
 
 /* ---------- 선택 → 카드 ---------- */
@@ -3591,6 +3635,12 @@ function sBind() {
   });
   $("#sSort").addEventListener("change", () => { sstate.sort = $("#sSort").value; sRender(); saveSearch(); });
   $("#sRun").addEventListener("click", sRun);
+  const sStopBtn = $("#sStop");
+  if (sStopBtn) sStopBtn.addEventListener("click", () => {
+    sStop = true;
+    sStopBtn.disabled = true;
+    setStatus("#sStatus", "중단하는 중… 지금 받고 있는 달까지만 받고 멈춥니다.", "info");
+  });
   $("#sList").addEventListener("change", e => {
     const cb = e.target.closest("input[data-pick]");
     if (!cb) return;
@@ -3635,7 +3685,7 @@ const ASIL_SORTS = ["date", "date-asc", "dong-floor", "price-desc"];
 
 const astate = {
   data: null, rows: [], order: [], cmplx: "",
-  deals: new Set(ASIL_DEALS), from: "", to: "", area: "all", dong: "all", sort: "date",
+  deals: new Set(ASIL_DEALS), from: "", to: "", period: "12", area: "all", dong: "all", sort: "date",
   sel: [], cap: LIST_CHUNK, busy: false, unlocked: false, restored: false
 };
 
@@ -3646,6 +3696,44 @@ function aPriceMan(price) { return parseAmount(String(price == null ? "" : price
 function aDongLabel(dong) { return !dong || dong === "-" ? "동 미상" : dong; }
 function aPyLabel(py) { const s = String(py == null ? "" : py).trim(); return (!s || /^-/.test(s)) ? "평 미상" : s; }
 function aPyRank(py) { const s = String(py == null ? "" : py).trim(); return (!s || /^-/.test(s)) ? 1e6 : aPyNum(s); }
+/* 기간(개월) 읽기 — 3개월·1년·3년·5년·10년 */
+function aYm6(v) { return String(v || "").replace(/[^0-9]/g, "").slice(0, 6); }
+function aYmIn(v6) { const s = String(v6 || ""); return s.slice(0, 4) + "-" + s.slice(4, 6); }
+/* 보유 데이터가 실제로 차 있는 기간 */
+function aDataSpan() {
+  let from = "", to = "";
+  astate.rows.forEach(r => {
+    if (!r.__ym) return;
+    if (!from || r.__ym < from) from = r.__ym;
+    if (!to || r.__ym > to) to = r.__ym;
+  });
+  if (!from) return { from: "", to: "", months: 0 };
+  return { from, to, months: ymNum(aYm6(to)) - ymNum(aYm6(from)) + 1 };
+}
+function aRenderPeriodNote(want, span) {
+  const note = $("#aRangeNote");
+  if (!note) return;
+  const n = Number(want);
+  if (!n || !span || !span.months || n <= span.months) { note.hidden = true; note.innerHTML = ""; return; }
+  note.hidden = false;
+  note.className = "range-hint";
+  note.innerHTML = `지금 보유한 아실 실거래 자료는 <b>${span.from.replace("-", ".")} ~ ${span.to.replace("-", ".")}</b>(${ymSpanName(span.months)}치)까지입니다. 최근 ${ymSpanName(n)}을 고라도 이 기간만 표시합니다.`;
+}
+/* 기간 프리셋(3개월·1년·3년·5년·10년)을 끝월 기준으로 적용 */
+function aApplyPeriod(n, silent) {
+  const span = aDataSpan();
+  if (!span.months) return;
+  const want = Math.min(Number(n) || 12, span.months);
+  const to6 = aYm6(span.to);
+  let from6 = numYm(ymNum(to6) - (want - 1));
+  if (ymNum(from6) < ymNum(aYm6(span.from))) from6 = aYm6(span.from);
+  astate.from = aYmIn(from6);
+  astate.to = aYmIn(to6);
+  astate.period = String(n);
+  aSyncInputs();
+  aRenderPeriodNote(n, span);
+  if (!silent) { astate.cap = LIST_CHUNK; aRender(); }
+}
 function aPeriodLabel() {
   const f = astate.from ? astate.from.replace("-", ".") : "";
   const t = astate.to ? astate.to.replace("-", ".") : "";
@@ -3717,9 +3805,8 @@ function aReady(data) {
   astate.sel = [];
   astate.cap = LIST_CHUNK;
   aLoadView();
-  const period = data.period || {};
-  astate.from = /^\d{4}-\d{2}$/.test(period.from || "") ? period.from : "";
-  astate.to = /^\d{4}-\d{2}$/.test(period.to || "") ? period.to : "";
+  astate.period = "12";
+  aApplyPeriod(12, true);   // 보유 기간 안에서 최근 1년(더 짧으면 있는 만큼)
   if (!astate.restored) astate.cmplx = astate.order[0] || "";
   if (astate.cmplx && !astate.order.includes(astate.cmplx)) astate.cmplx = astate.order[0] || "";
   aSyncInputs();
@@ -3729,10 +3816,11 @@ function aReady(data) {
   if (src) src.textContent = `업데이트 ${aStamp(data.collected_at || data.updated_at)} 기준 · 아실 가맹점 관리자 실거래가`;
 }
 function aSyncInputs() {
-  const f = $("#aFrom"), t = $("#aTo"), s = $("#aSort");
+  const f = $("#aFrom"), t = $("#aTo"), s = $("#aSort"), p = $("#aPeriod");
   if (f) f.value = astate.from || "";
   if (t) t.value = astate.to || "";
   if (s) s.value = astate.sort;
+  if (p) p.value = astate.period || "custom";
 }
 
 /* ---------- 보기 설정 저장 ---------- */
@@ -4114,12 +4202,27 @@ function aInit() {
     if (f && t && f > t) { from.value = t; to.value = f; }
     astate.from = from.value;
     astate.to = to.value;
+    astate.period = "custom";
+    const per = $("#aPeriod");
+    if (per) per.value = "custom";
+    const note = $("#aRangeNote");
+    if (note) { note.hidden = true; note.innerHTML = ""; }
     astate.cap = LIST_CHUNK;
     aRender();
   };
   if (from) from.addEventListener("change", onRange);
   if (to) to.addEventListener("change", onRange);
   const area = $("#aArea");
+  const per = $("#aPeriod");
+  if (per) per.addEventListener("change", () => {
+    if (per.value === "custom") {
+      astate.period = "custom";
+      const note = $("#aRangeNote");
+      if (note) { note.hidden = true; note.innerHTML = ""; }
+      return;
+    }
+    aApplyPeriod(per.value);
+  });
   if (area) area.addEventListener("change", () => { astate.area = area.value; astate.cap = LIST_CHUNK; aSaveView(); aRender(); });
   const dong = $("#aDong");
   if (dong) dong.addEventListener("change", () => { astate.dong = dong.value; astate.cap = LIST_CHUNK; aSaveView(); aRender(); });
@@ -4152,9 +4255,8 @@ function aReset() {
   astate.sort = "date";
   astate.sel = [];
   astate.cap = LIST_CHUNK;
-  const period = (astate.data && astate.data.period) || {};
-  astate.from = /^\d{4}-\d{2}$/.test(period.from || "") ? period.from : "";
-  astate.to = /^\d{4}-\d{2}$/.test(period.to || "") ? period.to : "";
+  astate.period = "12";
+  aApplyPeriod(12, true);
   aSyncInputs();
   aSaveView();
   aRender();
