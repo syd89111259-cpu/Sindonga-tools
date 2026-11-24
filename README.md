@@ -2,7 +2,7 @@
 
 신동아공인중개사사무소 실무 도구 모음. GitHub Pages로 열리는 한 장짜리 페이지입니다.
 
-- 주소: https://syd89111259-cpu.github.io/shindonga-tools/
+- 주소: https://syd89111259-cpu.github.io/Sindonga-tools/
 - 지금 있는 도구: **📊 실거래가 카드 생성기** — 국토교통부 아파트 매매 실거래가를 불러와 카톡·블로그용 카드 이미지(PNG)와 SNS 글을 만듭니다.
 
 ## 쓰는 법
@@ -44,3 +44,6 @@
 ## 배포
 
 `main` 브랜치 루트(`/`)를 GitHub Pages 소스로 씁니다. `main`에 푸시하면 1분 안팎 뒤 자동으로 반영됩니다.
+
+- 저장소: https://github.com/syd89111259-cpu/Sindonga-tools
+- Pages 설정: Settings → Pages → Source `Deploy from a branch`, Branch `main`, Folder `/ (root)`
