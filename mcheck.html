@@ -10,4 +10,8 @@
   .phone iframe{width:390px;height:2500px;border:0;display:block}
 </style>
 <div class="note">390px 폭 (iPhone 14) · 높이만 길게 (2500px) 잘라서 확인 — 안쪽은 index.html 그대로</div>
-<div class="wrap"><div class="phone"><iframe src="./index.html" title="390px 미리보기"></iframe></div></div>
+<div class="wrap"><div class="phone"><iframe id="pv" src="./index.html" title="390px 미리보기"></iframe></div></div>
+<script>
+  // 캐시에 걸리지 않도록 매번 새로 받는다
+  document.getElementById('pv').src = './index.html?v=' + Date.now();
+</script>
