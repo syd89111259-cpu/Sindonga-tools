@@ -317,6 +317,84 @@
   .pill.rr{background:#FDF2F8; color:#9D174D; margin-left:3px}
   .c-mob{display:none}
   .more-row{display:flex; justify-content:center; padding:10px; border-bottom:0; background:#FBFDFF}
+  /* ---------- 🏢 아실 14개 단지 (동별) ---------- */
+  .srcmode{width:100%; margin-bottom:0}
+  .srcmode button{flex:1 1 auto; padding:10px 14px; font-size:13px}
+  /* 잠금 해제 */
+  .asil-gate{max-width:600px; margin:0 auto}
+  .agate-h{display:flex; gap:12px; align-items:flex-start}
+  .agate-ico{width:44px; height:44px; border-radius:13px; display:grid; place-items:center; font-size:21px; background:#EEF4FF; flex:none}
+  .agate-h h2{margin:0 0 4px; font-size:15.5px; letter-spacing:-.3px}
+  .agate-h p{margin:0}
+  .alock-row{display:flex; gap:8px; align-items:flex-end; margin-top:12px}
+  .alock-row .f{flex:1 1 auto}
+  .asil-note{font-size:11.5px; color:var(--muted); line-height:1.55; margin-top:10px}
+  /* 단지 버튼 바 */
+  .acmplx{display:flex; flex-wrap:wrap; gap:5px; align-items:center; padding:11px 12px; border:1px solid var(--line); border-radius:10px; background:#FBFCFE}
+  .acmplx .al{font-size:11px; font-weight:800; color:var(--muted); margin-right:2px}
+  .achip{
+    border:1px solid #CBD5E1; background:#fff; border-radius:4px; padding:4px 9px; font-size:12px;
+    font-weight:700; color:#334155; cursor:pointer; white-space:nowrap; transition:.12s;
+  }
+  .achip:hover{border-color:#93B4FF; background:#F6FAFF}
+  .achip[aria-pressed="true"]{border-color:#2563EB; background:#EFF6FF; color:#1D4ED8; font-weight:800; box-shadow:inset 0 0 0 1px #2563EB}
+  .achip.reset{margin-left:auto; color:#B42318; border-color:#FECDCA; background:#FFF8F8}
+  .achip.reset:hover{background:#FEF2F2; border-color:#FCA5A5}
+  /* 선택 단지 + 거래유형 */
+  .a-selrow{display:flex; align-items:center; gap:10px 16px; flex-wrap:wrap; margin:14px 0 10px}
+  .a-selname{font-size:17px; font-weight:800; letter-spacing:-.4px; display:flex; align-items:baseline; gap:6px}
+  .a-selname .cnt{font-size:11.5px; font-weight:700; color:var(--muted); letter-spacing:0}
+  .adeals{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .adeal{display:inline-flex; align-items:center; gap:5px; font-size:13px; font-weight:800; cursor:pointer; user-select:none}
+  .adeal input{width:15px; height:15px; margin:0; cursor:pointer}
+  .adeal[data-deal="매매"]{color:#2563EB}
+  .adeal[data-deal="매매"] input{accent-color:#2563EB}
+  .adeal[data-deal="전세"]{color:#DC2626}
+  .adeal[data-deal="전세"] input{accent-color:#DC2626}
+  .adeal[data-deal="월세"]{color:#059669}
+  .adeal[data-deal="월세"] input{accent-color:#059669}
+  /* 필터 줄 */
+  .afilters{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:#FBFCFE}
+  .af{display:flex; align-items:center; gap:6px; min-width:0}
+  .af > .lbl{white-space:nowrap; font-size:11.5px; font-weight:800; color:#475569}
+  .af input[type=month]{width:134px; padding:6px 8px; font-size:12px; border-radius:8px}
+  .af select{width:auto; min-width:98px; max-width:190px; padding:6px 26px 6px 9px; font-size:12px; border-radius:8px}
+  .af .dash{color:var(--muted); font-weight:800; font-size:11px}
+  .afilters .sp{flex:1 1 auto}
+  /* 표 */
+  .atable-wrap{border:1px solid #D7DEE9; border-radius:10px; background:#fff; margin-top:12px; max-height:700px; overflow:auto}
+  .atable-head,.arow{display:grid; gap:6px; align-items:center; padding:8px 10px; font-variant-numeric:tabular-nums; min-width:660px}
+  .atable-head{background:#EEF2F7; border-bottom:1px solid #D7DEE9; font-size:10.5px; font-weight:800; color:#475569; letter-spacing:.2px; position:sticky; top:0; z-index:2}
+  .atable-wrap.all .atable-head,.atable-wrap.all .arow{grid-template-columns:24px minmax(96px,1.1fr) 54px 42px 52px 76px 84px 44px 100px 46px minmax(96px,1fr); min-width:770px}
+  .atable-head,.arow{grid-template-columns:24px 54px 42px 52px 76px 84px 44px 100px 46px minmax(96px,1fr)}
+  .atable{list-style:none; margin:0; padding:0}
+  .arow{border-bottom:1px solid #EDF1F6; font-size:12.5px; color:#1F2937}
+  .arow:last-child{border-bottom:0}
+  .arow:hover{background:#F8FAFF}
+  .arow.on{background:var(--accent-soft)}
+  .arow input[type=checkbox]{width:15px; height:15px; accent-color:#2563EB; margin:0; cursor:pointer}
+  .arow .a-chk{display:grid; place-items:center}
+  .arow .a-cmplx{font-size:11.5px; font-weight:800; color:#1D4ED8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .arow .a-dong{font-weight:800; white-space:nowrap}
+  .arow .a-dong.no,.arow .a-floor,.arow .a-m2{color:#64748B; font-weight:600}
+  .arow .a-floor,.arow .a-py,.arow .a-term{white-space:nowrap; font-size:11.5px}
+  .arow .a-m2{white-space:nowrap; font-size:11.5px}
+  .arow .a-date{white-space:nowrap; font-size:11.5px; color:#475569; display:flex; align-items:center; gap:4px}
+  .a-ago{display:inline-grid; place-items:center; min-width:17px; height:17px; padding:0 3px; border-radius:50%; background:#EEF2F7; color:#64748B; font-size:9.5px; font-weight:800; letter-spacing:-.3px}
+  .a-ago.new{background:#E8F0FF; color:#1D4ED8}
+  .arow .a-gb{font-size:11px; font-weight:800; white-space:nowrap}
+  .a-gb.s{color:#1D4ED8}
+  .a-gb.r{color:#B45309}
+  .a-gb.n{color:#94A3B8; font-weight:600}
+  .arow .a-term{color:#64748B; font-variant-numeric:tabular-nums}
+  .arow .a-deal{font-weight:800; font-size:12px; white-space:nowrap}
+  .arow .a-price{font-weight:800; text-align:right; white-space:nowrap; letter-spacing:-.2px}
+  .arow[data-deal="매매"] .a-deal{color:#2563EB}
+  .arow[data-deal="매매"] .a-price{color:#1D4ED8}
+  .arow[data-deal="전세"] .a-deal{color:#DC2626}
+  .arow[data-deal="전세"] .a-price{color:#B91C1C}
+  .arow[data-deal="월세"] .a-deal{color:#059669}
+  .arow[data-deal="월세"] .a-price{color:#047857}
   @media (max-width:900px){
     .sum{grid-template-columns:repeat(2,minmax(0,1fr))}
   }
@@ -329,6 +407,29 @@
     .srow .c-amt{order:3; margin-left:auto; text-align:right; font-size:13px}
     .srow .c-date, .srow .c-py, .srow .c-floor, .srow .c-kind, .srow .c-type, .srow .c-reg, .srow .c-cont{display:none}
     .srow .c-mob{display:block; order:4; flex:1 0 100%; font-size:11px; color:var(--muted); line-height:1.5; padding-left:24px}
+    /* 아실 표 → 카드형 */
+    .atable-wrap{max-height:none; overflow:visible; border-radius:12px}
+    .atable-head{display:none}
+    .arow{display:flex; flex-wrap:wrap; gap:3px 8px; padding:10px 11px; min-width:0}
+    .arow .a-chk{order:1}
+    .arow .a-cmplx{order:2; flex:1 1 100%; font-size:11px}
+    .arow .a-dong{order:3; font-size:13px}
+    .arow .a-floor{order:4}
+    .arow .a-py{order:5}
+    .arow .a-m2{order:6}
+    .arow .a-deal{order:7; margin-left:auto}
+    .arow .a-price{order:8; flex:1 1 100%; font-size:14.5px}
+    .atable-wrap.all .atable-head,.atable-wrap.all .arow{min-width:0}
+    .arow .a-date{order:9}
+    .arow .a-gb{order:9}
+    .arow .a-term{order:9}
+    .a-selname{font-size:15.5px}
+    .af{flex:1 1 100%}
+    .af select,.af input[type=month]{flex:1 1 auto; max-width:none; width:auto}
+    .acmplx{padding:9px 9px}
+    .achip{padding:4px 8px; font-size:11.5px}
+    .srcmode button{font-size:12px; padding:9px 8px; white-space:normal; line-height:1.25}
+    .asil-gate .agate-h h2{font-size:14.5px}
   }
   @media (max-width:1080px){
     .layout{grid-template-columns:1fr; padding:14px; gap:14px}
@@ -690,6 +791,124 @@
 <main class="view" id="view-search">
 <div class="srch">
 
+  <!-- ============ 0. 조회 방식 ============ -->
+  <div class="seg srcmode" id="sMode" role="group" aria-label="조회 방식">
+    <button type="button" data-mode="asil" aria-pressed="true">🏢 아실 14개 단지 (동별)</button>
+    <button type="button" data-mode="api" aria-pressed="false">🌐 국토부 전체 API</button>
+  </div>
+
+  <!-- ============ A. 아실 14개 단지 (동별) ============ -->
+  <div id="asilPane">
+
+    <!-- 잠금 해제 -->
+    <section class="card asil-gate" id="aGate">
+      <div class="card-b">
+        <div class="agate-h">
+          <div class="agate-ico">🔐</div>
+          <div>
+            <h2>아실 동/호 실거래 잠금 해제</h2>
+            <p class="note">가맹점 14개 단지의 동·호 실거래가 암호화되어 있습니다. 비밀번호를 넣으면 <b>이 브라우저 안에서만</b> 풀립니다.</p>
+          </div>
+        </div>
+        <div class="alock-row">
+          <div class="f grow">
+            <label class="lbl" for="aPass">🔐 아실 데이터 비밀번호</label>
+            <input type="password" id="aPass" autocomplete="current-password" spellcheck="false" placeholder="비밀번호를 입력하세요">
+          </div>
+          <button class="btn ghost sm" id="aPassEye" type="button" aria-pressed="false">표시</button>
+          <button class="btn primary" id="aUnlock" type="button">열기</button>
+        </div>
+        <div class="status" id="aStatus"></div>
+        <p class="asil-note">
+          성공하면 비밀번호는 이 브라우저의 <span class="kbd">localStorage['shindonga.asilPass']</span>에만 저장되어 다음부터는 자동으로 열립니다. 데이터는 <span class="kbd">asil_data.enc</span>(AES-256-GCM)로만 배포되고 화면에는 <b>잠금을 푼 뒤</b>에만 보입니다. 공용 PC에서는 <b>잠금</b>을 눌러 주세요.
+        </p>
+      </div>
+    </section>
+
+    <!-- 잠금 해제 후 -->
+    <div id="aMain" hidden>
+
+      <!-- 1. 단지 · 조건 -->
+      <section class="card">
+        <div class="card-h">
+          <h2>1. 단지 · 조건</h2>
+          <span class="hint" id="aHint">아실 가맹점 실거래가</span>
+          <div class="appbar-sp"></div>
+          <button class="btn sm ghost" id="aLock" type="button" title="이 브라우저에 저장한 비밀번호를 지우고 잠급니다">🔒 잠금</button>
+          <button class="btn sm ghost" id="aPassChange" type="button" title="저장된 비밀번호를 지우고 다시 입력합니다">비밀번호 변경</button>
+        </div>
+        <div class="card-b">
+          <div class="acmplx" id="aCmplx" role="group" aria-label="단지 선택"></div>
+
+          <div class="a-selrow">
+            <div class="a-selname" id="aSelName">선택 단지<span class="cnt" id="aSelCnt"></span></div>
+            <div class="adeals" id="aDeals" role="group" aria-label="거래 유형">
+              <label class="adeal" data-deal="매매"><input type="checkbox" data-deal="매매" checked>매매</label>
+              <label class="adeal" data-deal="전세"><input type="checkbox" data-deal="전세" checked>전세</label>
+              <label class="adeal" data-deal="월세"><input type="checkbox" data-deal="월세" checked>월세</label>
+            </div>
+          </div>
+
+          <div class="afilters">
+            <div class="af">
+              <span class="lbl">기간</span>
+              <input type="month" id="aFrom" aria-label="시작월">
+              <span class="dash">~</span>
+              <input type="month" id="aTo" aria-label="끝월">
+            </div>
+            <div class="af">
+              <span class="lbl">면적</span>
+              <select id="aArea" aria-label="면적"><option value="all">전체 면적</option></select>
+            </div>
+            <div class="af">
+              <span class="lbl">동</span>
+              <select id="aDong" aria-label="동"><option value="all">전체동</option></select>
+            </div>
+            <div class="af">
+              <span class="lbl">정렬</span>
+              <select id="aSort" aria-label="정렬">
+                <option value="date">최근순</option>
+                <option value="date-asc">과거순</option>
+                <option value="dong-floor">동·층별</option>
+                <option value="price-desc">높은 가격순</option>
+              </select>
+            </div>
+          </div>
+          <p class="asil-note" style="margin-top:9px">
+            아실 <b>[동/호 실거래가]</b> 화면 그대로입니다. 매매·전세·월세를 한 표에서 같이 볼 수 있고, 동·면적·기간으로 좁힐 수 있습니다. <span class="mini" id="aSourceNote"></span>
+          </p>
+        </div>
+      </section>
+
+      <!-- 2. 실거래 내역 -->
+      <section class="card" style="margin-top:16px">
+        <div class="card-h">
+          <h2>2. 실거래 내역</h2>
+          <span class="hint" id="aCond"></span>
+        </div>
+        <div class="card-b">
+          <div class="sum" id="aSum"></div>
+
+          <div class="atable-wrap" id="aTableWrap">
+            <div class="atable-head" id="aHead"></div>
+            <ul class="atable" id="aList"></ul>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <span class="mini" id="aSelCount">매매 0 / 8 선택</span>
+            <div class="sp"></div>
+            <button class="btn sm ghost" id="aSelNone" type="button">선택 해제</button>
+            <button class="btn primary" id="aMakeCard" type="button" disabled>선택 건 카드로 만들기</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ============ B. 국토부 전체 API ============ -->
+  <div id="apiPane" hidden>
+
   <!-- ============ 1. 조회 조건 ============ -->
   <section class="card">
     <div class="card-h" style="padding-bottom:10px">
@@ -802,6 +1021,7 @@
     </div>
   </section>
 
+  </div>
 </div>
 </main>
 
@@ -3406,13 +3626,552 @@ function sInit() {
   sRender();
 }
 
+/* ============================ 🏢 아실 14개 단지 (동별) ============================ */
+const ASIL_ENC_URL = "asil_data.enc";
+const ASIL_PASS_STORE = "shindonga.asilPass";
+const ASIL_VIEW_STORE = "shindonga.asilView.v1";
+const ASIL_DEALS = ["매매", "전세", "월세"];
+const ASIL_SORTS = ["date", "date-asc", "dong-floor", "price-desc"];
+
+const astate = {
+  data: null, rows: [], order: [], cmplx: "",
+  deals: new Set(ASIL_DEALS), from: "", to: "", area: "all", dong: "all", sort: "date",
+  sel: [], cap: LIST_CHUNK, busy: false, unlocked: false, restored: false
+};
+
+function aPyNum(py) { const m = /(\d+)/.exec(String(py == null ? "" : py)); return m ? parseInt(m[1], 10) : 0; }
+function aNum(v) { const m = /(\d+)/.exec(String(v == null ? "" : v)); return m ? parseInt(m[1], 10) : 0; }
+function aAreaNum(m2) { const v = parseFloat(String(m2 == null ? "" : m2).replace(/[^\d.]/g, "")); return isFinite(v) ? v : 0; }
+function aPriceMan(price) { return parseAmount(String(price == null ? "" : price).split("/")[0]); }
+function aDongLabel(dong) { return !dong || dong === "-" ? "동 미상" : dong; }
+function aPyLabel(py) { return !py || py === "-" ? "평 미상" : py; }
+function aPeriodLabel() {
+  const f = astate.from ? astate.from.replace("-", ".") : "";
+  const t = astate.to ? astate.to.replace("-", ".") : "";
+  if (f && t) return f === t ? `${t}` : `${f} ~ ${t}`;
+  return f || t || "전체 기간";
+}
+function aStamp(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/.exec(String(iso || ""));
+  return m ? `${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}` : String(iso || "-");
+}
+/* 계약일로부터 며칠 지났는지 (KST 기준) */
+function aDaysSince(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));
+  if (!m) return null;
+  const target = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+  const kst = new Date(Date.now() + 9 * 3600 * 1000);
+  const today = Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate());
+  const d = Math.round((today - target) / 86400000);
+  return d >= 0 ? d : null;
+}
+
+/* ---------- 복호화 (Web Crypto API) ---------- */
+function aB64Bytes(text) {
+  const bin = atob(String(text || ""));
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+async function aDecrypt(pw, enc) {
+  if (!(window.crypto && crypto.subtle && crypto.subtle.deriveKey)) throw new Error("NO_CRYPTO");
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: aB64Bytes(enc.salt), iterations: Number(enc.iter) || 100000, hash: "SHA-256" },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]
+  );
+  const buf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: aB64Bytes(enc.iv) }, key, aB64Bytes(enc.ct));
+  return JSON.parse(new TextDecoder().decode(buf));
+}
+let aEncCache = null, aEncPromise = null;
+async function aFetchEnc() {
+  if (aEncCache) return aEncCache;
+  if (!aEncPromise) {
+    aEncPromise = (async () => {
+      const res = await fetch(ASIL_ENC_URL, { cache: "no-cache" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      aEncCache = await res.json();
+      return aEncCache;
+    })().catch(e => { aEncPromise = null; throw e; });
+  }
+  return aEncPromise;
+}
+
+/* ---------- 데이터 준비 ---------- */
+function aReady(data) {
+  astate.data = data;
+  astate.order = (data.complexes || []).map(c => c.name);
+  const rows = [];
+  (data.complexes || []).forEach(c => {
+    (c.records || []).forEach((r, i) => {
+      const iso = r.contract_date_iso || "";
+      rows.push(Object.assign({}, r, {
+        __cmplx: c.name, __id: `${c.apt_code}:${i}`, __date: iso, __ym: iso.slice(0, 7),
+        __py: aPyNum(r.py), __area: aAreaNum(r.m2), __amount: aPriceMan(r.price), __floor: aNum(r.floor)
+      }));
+    });
+  });
+  astate.rows = rows;
+  astate.unlocked = true;
+  astate.sel = [];
+  astate.cap = LIST_CHUNK;
+  aLoadView();
+  const period = data.period || {};
+  astate.from = /^\d{4}-\d{2}$/.test(period.from || "") ? period.from : "";
+  astate.to = /^\d{4}-\d{2}$/.test(period.to || "") ? period.to : "";
+  if (!astate.restored) astate.cmplx = astate.order[0] || "";
+  if (astate.cmplx && !astate.order.includes(astate.cmplx)) astate.cmplx = astate.order[0] || "";
+  aSyncInputs();
+  aRender();
+  aShowMain();
+  const src = $("#aSourceNote");
+  if (src) src.textContent = `업데이트 ${aStamp(data.collected_at || data.updated_at)} 기준 · 아실 가맹점 관리자 실거래가`;
+}
+function aSyncInputs() {
+  const f = $("#aFrom"), t = $("#aTo"), s = $("#aSort");
+  if (f) f.value = astate.from || "";
+  if (t) t.value = astate.to || "";
+  if (s) s.value = astate.sort;
+}
+
+/* ---------- 보기 설정 저장 ---------- */
+function aSaveView() {
+  try {
+    localStorage.setItem(ASIL_VIEW_STORE, JSON.stringify({
+      cmplx: astate.cmplx, deals: Array.from(astate.deals), sort: astate.sort,
+      area: astate.area, dong: astate.dong
+    }));
+  } catch (e) {}
+}
+function aLoadView() {
+  try {
+    const o = JSON.parse(localStorage.getItem(ASIL_VIEW_STORE) || "null");
+    if (!o || typeof o !== "object") return;
+    if (typeof o.cmplx === "string") astate.cmplx = o.cmplx;
+    astate.restored = true;
+    if (Array.isArray(o.deals)) {
+      const set = new Set(o.deals.filter(d => ASIL_DEALS.includes(d)));
+      if (set.size) astate.deals = set;
+    }
+    if (ASIL_SORTS.includes(o.sort)) astate.sort = o.sort;
+    if (typeof o.area === "string") astate.area = o.area;
+    if (typeof o.dong === "string") astate.dong = o.dong;
+  } catch (e) {}
+}
+
+/* ---------- 필터 · 정렬 ---------- */
+function aBaseRows() {
+  return astate.cmplx ? astate.rows.filter(r => r.__cmplx === astate.cmplx) : astate.rows.slice();
+}
+function aFiltered() {
+  let rows = aBaseRows().filter(r => astate.deals.has(r.deal));
+  if (astate.from) rows = rows.filter(r => r.__ym && r.__ym >= astate.from);
+  if (astate.to) rows = rows.filter(r => r.__ym && r.__ym <= astate.to);
+  if (astate.area !== "all") rows = rows.filter(r => String(r.py || "-") === astate.area);
+  if (astate.dong !== "all") rows = rows.filter(r => String(r.dong || "-") === astate.dong);
+  return aSortRows(rows);
+}
+function aSortRows(rows) {
+  const by = astate.sort;
+  const order = astate.order;
+  const byDate = (a, b) => (b.__date || "").localeCompare(a.__date || "") || b.__amount - a.__amount;
+  return rows.slice().sort((a, b) => {
+    if (by === "price-desc") return b.__amount - a.__amount || byDate(a, b);
+    if (by === "date-asc") return (a.__date || "").localeCompare(b.__date || "") || a.__amount - b.__amount;
+    if (by === "dong-floor") {
+      if (a.__cmplx !== b.__cmplx) return order.indexOf(a.__cmplx) - order.indexOf(b.__cmplx);
+      const da = aNum(a.dong) || 1e6, db = aNum(b.dong) || 1e6;
+      if (da !== db) return da - db;
+      if (b.__floor !== a.__floor) return b.__floor - a.__floor;
+      return byDate(a, b);
+    }
+    return byDate(a, b);
+  });
+}
+
+/* ---------- 화면 그리기 ---------- */
+function aRenderCmplx() {
+  const box = $("#aCmplx");
+  if (!box) return;
+  box.innerHTML = astate.order.map(n =>
+    `<button type="button" class="achip" data-cmplx="${esc(n)}" aria-pressed="${astate.cmplx === n}">${esc(n)}</button>`).join("") +
+    `<button type="button" class="achip" data-cmplx="" aria-pressed="${!astate.cmplx}">전체 단지</button>` +
+    `<button type="button" class="achip reset" id="aReset" title="단지·기간·면적·동·정렬을 처음 상태로">초기화</button>`;
+}
+function aRenderFilters() {
+  const selA = $("#aArea"), selD = $("#aDong");
+  if (!selA || !selD) return;
+  const base = aBaseRows();
+  const areas = new Map();
+  base.forEach(r => { const k = String(r.py || "-"); areas.set(k, (areas.get(k) || 0) + 1); });
+  if (astate.area !== "all" && !areas.has(astate.area)) astate.area = "all";
+  const aKeys = Array.from(areas.keys()).sort((x, y) =>
+    ((x === "-" || !x) ? 1e6 : aPyNum(x)) - ((y === "-" || !y) ? 1e6 : aPyNum(y)));
+  selA.innerHTML = `<option value="all">전체 면적 (${base.length.toLocaleString("ko-KR")})</option>` +
+    aKeys.map(k => `<option value="${esc(k)}">${esc(aPyLabel(k))} (${areas.get(k)})</option>`).join("");
+  selA.value = astate.area;
+
+  const dongs = new Map();
+  base.forEach(r => { const k = String(r.dong || "-"); dongs.set(k, (dongs.get(k) || 0) + 1); });
+  if (astate.dong !== "all" && !dongs.has(astate.dong)) astate.dong = "all";
+  const dKeys = Array.from(dongs.keys()).sort((x, y) =>
+    ((x === "-" || !x) ? 1e8 : aNum(x)) - ((y === "-" || !y) ? 1e8 : aNum(y)) || x.localeCompare(y, "ko"));
+  selD.innerHTML = `<option value="all">전체동 (${base.length.toLocaleString("ko-KR")})</option>` +
+    dKeys.map(k => `<option value="${esc(k)}">${esc(aDongLabel(k))} (${dongs.get(k)})</option>`).join("");
+  selD.value = astate.dong;
+}
+function aRenderSelName() {
+  const el = $("#aSelName");
+  if (!el) return;
+  const base = aBaseRows();
+  el.innerHTML = `${esc(astate.cmplx || "전체 단지")}<span class="cnt">${base.length.toLocaleString("ko-KR")}건</span>`;
+  $$("#aDeals input[data-deal]").forEach(cb => { cb.checked = astate.deals.has(cb.dataset.deal); });
+}
+function aRenderSum() {
+  const box = $("#aSum");
+  if (!box) return;
+  const arr = aFiltered();
+  const byDeal = { "매매": 0, "전세": 0, "월세": 0 };
+  arr.forEach(r => { if (byDeal[r.deal] != null) byDeal[r.deal]++; });
+  const latest = arr.slice().sort((a, b) => (b.__date || "").localeCompare(a.__date || "") || b.__amount - a.__amount)[0];
+  const cond = $("#aCond");
+  if (cond) {
+    const bits = [astate.cmplx || "전체 단지", aPeriodLabel(), Array.from(astate.deals).join("·")];
+    if (astate.area !== "all") bits.push(`면적 ${aPyLabel(astate.area)}`);
+    if (astate.dong !== "all") bits.push(aDongLabel(astate.dong));
+    cond.textContent = bits.join(" · ");
+  }
+  box.innerHTML =
+    sumCell("건수", `${arr.length.toLocaleString("ko-KR")}건`, `매매 ${byDeal["매매"]} · 전세 ${byDeal["전세"]} · 월세 ${byDeal["월세"]}`, true) +
+    sumCell("최근 거래", latest && latest.__date ? dateLong(latest.__date) : "-",
+      latest ? `${latest.__cmplx} ${aDongLabel(latest.dong)} · ${latest.deal} ${latest.price}` : "조건에 맞는 거래가 없습니다", true) +
+    sumCell("업데이트", aStamp(astate.data.collected_at || astate.data.updated_at), "아실 가맹점 실거래가") +
+    sumCell("기간", aPeriodLabel(), `전체 ${astate.rows.length.toLocaleString("ko-KR")}건 수집분`);
+}
+function aRenderHead() {
+  const head = $("#aHead");
+  if (!head) return;
+  head.innerHTML = `<span title="카드로 만들 매매 거래를 체크합니다">✓</span>` +
+    (astate.cmplx ? "" : "<span>단지</span>") +
+    "<span>동</span><span>층</span><span>면적(평)</span><span>면적(㎡)</span><span>계약일</span><span>구분</span><span>계약기간</span><span>거래</span><span>체결가격</span>";
+}
+function aRowHtml(r) {
+  const picked = astate.sel.includes(r.__id);
+  const chk = r.deal === "매매"
+    ? `<input type="checkbox" data-pick="${r.__id}" ${picked ? "checked" : ""} aria-label="${esc(r.__cmplx)} ${esc(aDongLabel(r.dong))} ${esc(r.py)} 매매 선택">`
+    : "";
+  const gb = r.gubun === "신규" ? `<span class="a-gb s">신규</span>`
+    : r.gubun === "갱신" ? `<span class="a-gb r">갱신</span>`
+    : `<span class="a-gb n">-</span>`;
+  const days = aDaysSince(r.__date);
+  const ago = days == null ? "" : `<span class="a-ago${days <= 7 ? " new" : ""}" title="계약일로부터 ${days}일">${days > 99 ? "99+" : days}</span>`;
+  const floor = r.floor && r.floor !== "-" ? (/층$/.test(r.floor) ? r.floor : r.floor + "층") : "-";
+  const term = r.contract_period && r.contract_period !== "-" ? r.contract_period : "-";
+  return `<li class="arow${picked ? " on" : ""}" data-id="${r.__id}" data-deal="${esc(r.deal)}">
+    <span class="a-chk">${chk}</span>${astate.cmplx ? "" : `<span class="a-cmplx" title="${esc(r.__cmplx)}">${esc(r.__cmplx)}</span>`}
+    <span class="a-dong${!r.dong || r.dong === "-" ? " no" : ""}" title="${esc(aDongLabel(r.dong))}">${esc(aDongLabel(r.dong))}</span>
+    <span class="a-floor">${esc(floor)}</span>
+    <span class="a-py">${esc(r.py && r.py !== "-" ? r.py : "-")}</span>
+    <span class="a-m2">${esc(r.m2 || "-")}</span>
+    <span class="a-date">${esc(r.contract_date || dateShort(r.__date))}${ago}</span>
+    ${gb}
+    <span class="a-term">${esc(term)}</span>
+    <span class="a-deal">${esc(r.deal)}</span>
+    <span class="a-price">${esc(r.price)}</span>
+  </li>`;
+}
+function aRenderList() {
+  const ul = $("#aList"), wrap = $("#aTableWrap");
+  if (!ul) return;
+  if (wrap) wrap.classList.toggle("all", !astate.cmplx);
+  aRenderHead();
+  const arr = aFiltered();
+  if (!arr.length) {
+    ul.innerHTML = `<li class="empty">조건에 맞는 거래가 없습니다.<br>단지·기간·면적·동 또는 아래 거래유형 체크를 풀어 보세요.</li>`;
+    return;
+  }
+  const shown = Math.min(arr.length, astate.cap);
+  ul.innerHTML = arr.slice(0, shown).map(aRowHtml).join("") +
+    (arr.length > shown
+      ? `<li class="more-row"><button class="btn sm ghost" id="aMore" type="button">더 보기 (${(arr.length - shown).toLocaleString("ko-KR")}건 남음)</button></li>`
+      : "");
+}
+function aRenderAction() {
+  const n = astate.sel.length;
+  const c = $("#aSelCount");
+  if (c) c.textContent = `매매 ${n} / 8 선택`;
+  const btn = $("#aMakeCard");
+  if (btn) btn.disabled = !n;
+}
+function aRender() {
+  if (!astate.data) return;
+  aRenderCmplx();
+  aRenderFilters();
+  aRenderSelName();
+  aRenderSum();
+  aRenderList();
+  aRenderAction();
+}
+
+/* ---------- 선택 · 카드 ---------- */
+function aTogglePick(id, on) {
+  const i = astate.sel.indexOf(id);
+  if (on) {
+    if (i >= 0) return true;
+    if (astate.sel.length >= 8) { toast("카드에는 최대 8건까지 넣을 수 있습니다"); return false; }
+    astate.sel.push(id);
+  } else if (i >= 0) {
+    astate.sel.splice(i, 1);
+  }
+  return true;
+}
+function aMakeCard() {
+  const rows = astate.sel.map(id => astate.rows.find(r => r.__id === id)).filter(Boolean).slice(0, 8);
+  if (!rows.length) { toast("카드로 만들 매매 거래를 먼저 체크하세요"); return; }
+  const deals = rows.map(r => {
+    const d = mkDeal({
+      name: r.__cmplx, dong: "", aptDong: r.dong && r.dong !== "-" ? r.dong : "",
+      jibun: "", roadNm: "", roadBonbun: "",
+      floor: String(r.floor || "").replace(/[^\d]/g, ""),
+      area: r.__area, amount: r.__amount, date: r.__date,
+      badge: "없음", selected: true
+    });
+    d.name = r.__cmplx;   // 아실 단지명 그대로 (카드 생성기의 자동 이름 정규화로 다른 단지가 되지 않게)
+    return d;
+  });
+  state.deals = deals;
+  state.bands = [];
+  state.title = `${astate.cmplx || "안양"} 아파트 실거래가`;
+  state.subtitle = `아실 동/호 실거래 · ${aPeriodLabel()}`;
+  $("#inTitle").value = state.title;
+  $("#inSubtitle").value = state.subtitle;
+  $("#listFilter").value = "";
+  resetListCap();
+  refresh();
+  switchView("cardmaker");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  toast(`${deals.length}건을 카드에 넣었습니다`);
+}
+
+/* ---------- 잠금 ---------- */
+function aShowGate(msg, kind) {
+  const gate = $("#aGate"), main = $("#aMain");
+  if (gate) gate.hidden = false;
+  if (main) main.hidden = true;
+  if (msg !== undefined) setStatus("#aStatus", msg, kind || "info");
+}
+function aShowMain() {
+  const gate = $("#aGate"), main = $("#aMain");
+  if (gate) gate.hidden = true;
+  if (main) main.hidden = false;
+  setStatus("#aStatus", "");
+}
+function aForgetPass() {
+  try { localStorage.removeItem(ASIL_PASS_STORE); } catch (e) {}
+}
+function aLockAll() {
+  astate.data = null;
+  astate.rows = [];
+  astate.order = [];
+  astate.sel = [];
+  astate.unlocked = false;
+  astate.cap = LIST_CHUNK;
+  const p = $("#aPass");
+  if (p) p.value = "";
+}
+function aLock() {
+  aForgetPass();
+  aLockAll();
+  aShowGate("잠갔습니다. 다음에 열 때 비밀번호를 다시 넣어 주세요.", "info");
+  toast("아실 데이터를 잠갔습니다");
+}
+function aChangePass() {
+  aForgetPass();
+  aLockAll();
+  aShowGate("새 비밀번호를 입력하세요. (저장된 비밀번호만 지우고, 배포된 파일의 비밀번호가 바뀌었을 때 다시 넣는 곳입니다)", "info");
+  const p = $("#aPass");
+  if (p) { p.value = ""; p.focus(); }
+}
+async function aUnlock(pw, silent) {
+  pw = String(pw == null ? "" : pw);
+  if (!pw) {
+    if (!silent) { setStatus("#aStatus", "비밀번호를 입력하세요.", "err"); $("#aPass").focus(); }
+    return false;
+  }
+  if (astate.busy) return false;
+  astate.busy = true;
+  const btn = $("#aUnlock");
+  if (btn && !silent) { btn.disabled = true; btn.textContent = "여는 중…"; }
+  if (!silent) setStatus("#aStatus", "암호를 풀고 있습니다…", "info");
+  try {
+    const enc = await aFetchEnc();
+    const data = await aDecrypt(pw, enc);
+    if (!data || !Array.isArray(data.complexes) || !data.complexes.length) throw new Error("BAD_DATA");
+    try { localStorage.setItem(ASIL_PASS_STORE, pw); } catch (e) {}
+    const pass = $("#aPass");
+    if (pass) pass.value = "";
+    const total = data.total_count || data.complexes.reduce((s, c) => s + (c.records || []).length, 0);
+    aReady(data);
+    toast(`아실 실거래 ${Number(total).toLocaleString("ko-KR")}건을 열었습니다`);
+    return true;
+  } catch (e) {
+    const msg = String((e && e.message) || e || "");
+    let text, kind = "err";
+    if (msg === "BAD_DATA") text = "데이터 형식이 예상과 다릅니다. 관리자(도구 배포자)에게 알려 주세요.";
+    else if (msg === "NO_CRYPTO") text = "이 브라우저에서는 암호 해제(Web Crypto)를 쓸 수 없습니다. 크롬·사파리·엣지 최신 버전에서 열어 주세요.";
+    else if ((e && /^(OperationError|DataError)$/.test(e.name || "")) || /decrypt/i.test(msg)) text = "비밀번호가 맞지 않습니다.";
+    else if (/^HTTP /.test(msg) || e instanceof TypeError) {
+      text = location.protocol === "file:"
+        ? "아실 데이터를 불러오지 못했습니다. <b>https://syd89111259-cpu.github.io/Sindonga-tools/</b> 주소로 열어 주세요."
+        : `아실 데이터 파일(asil_data.enc)을 불러오지 못했습니다. (${esc(msg || "네트워크")})`;
+    } else text = `열지 못했습니다. (${esc(msg)})`;
+    if (silent && /비밀번호/.test(text)) {
+      aForgetPass();
+      aShowGate("저장된 비밀번호로 열리지 않습니다. 비밀번호를 다시 입력해 주세요.", "err");
+    } else if (!silent) {
+      setStatus("#aStatus", text, kind);
+      const p = $("#aPass");
+      if (p && /비밀번호/.test(text)) { p.value = ""; p.focus(); }
+    } else if (!astate.data) {
+      aShowGate();
+    }
+    return false;
+  } finally {
+    astate.busy = false;
+    if (btn) { btn.disabled = false; btn.textContent = "열기"; }
+  }
+}
+
+/* ---------- 조회 방식 전환 ---------- */
+function aSetMode(mode) {
+  const asil = mode !== "api";
+  $$("#sMode button").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.mode === "asil") === asil)));
+  const ap = $("#asilPane"), lp = $("#apiPane");
+  if (ap) ap.hidden = !asil;
+  if (lp) lp.hidden = asil;
+  if (asil) aOnShow();
+  else sRender();
+}
+function aOnShow() {
+  if (astate.data) { aRender(); return; }
+  if (astate.busy) return;
+  let stored = "";
+  try { stored = localStorage.getItem(ASIL_PASS_STORE) || ""; } catch (e) {}
+  if (stored) aUnlock(stored, true);
+}
+
+/* ---------- 바인딩 ---------- */
+function aInit() {
+  const mode = $("#sMode");
+  if (mode) mode.addEventListener("click", e => {
+    const b = e.target.closest("button[data-mode]");
+    if (b) aSetMode(b.dataset.mode);
+  });
+  const pass = $("#aPass");
+  if (pass) pass.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); aUnlock(pass.value, false); }
+  });
+  const eye = $("#aPassEye");
+  if (eye) eye.addEventListener("click", () => {
+    const on = eye.getAttribute("aria-pressed") !== "true";
+    eye.setAttribute("aria-pressed", String(on));
+    eye.textContent = on ? "숨김" : "표시";
+    pass.type = on ? "text" : "password";
+  });
+  const unlock = $("#aUnlock");
+  if (unlock) unlock.addEventListener("click", () => aUnlock(pass.value, false));
+  const lock = $("#aLock");
+  if (lock) lock.addEventListener("click", aLock);
+  const chg = $("#aPassChange");
+  if (chg) chg.addEventListener("click", aChangePass);
+
+  const box = $("#aCmplx");
+  if (box) box.addEventListener("click", e => {
+    if (e.target.closest("#aReset")) { aReset(); return; }
+    const chip = e.target.closest("[data-cmplx]");
+    if (!chip) return;
+    astate.cmplx = chip.dataset.cmplx || "";
+    astate.area = "all";
+    astate.dong = "all";
+    astate.sel = [];
+    astate.cap = LIST_CHUNK;
+    aSaveView();
+    aRender();
+  });
+  const deals = $("#aDeals");
+  if (deals) deals.addEventListener("change", e => {
+    const cb = e.target.closest("input[data-deal]");
+    if (!cb) return;
+    const k = cb.dataset.deal;
+    if (cb.checked) astate.deals.add(k); else astate.deals.delete(k);
+    astate.cap = LIST_CHUNK;
+    aSaveView();
+    aRender();
+  });
+  const from = $("#aFrom"), to = $("#aTo");
+  const onRange = () => {
+    const f = from.value, t = to.value;
+    if (f && t && f > t) { from.value = t; to.value = f; }
+    astate.from = from.value;
+    astate.to = to.value;
+    astate.cap = LIST_CHUNK;
+    aRender();
+  };
+  if (from) from.addEventListener("change", onRange);
+  if (to) to.addEventListener("change", onRange);
+  const area = $("#aArea");
+  if (area) area.addEventListener("change", () => { astate.area = area.value; astate.cap = LIST_CHUNK; aSaveView(); aRender(); });
+  const dong = $("#aDong");
+  if (dong) dong.addEventListener("change", () => { astate.dong = dong.value; astate.cap = LIST_CHUNK; aSaveView(); aRender(); });
+  const sort = $("#aSort");
+  if (sort) sort.addEventListener("change", () => { astate.sort = sort.value; astate.cap = LIST_CHUNK; aSaveView(); aRender(); });
+  const list = $("#aList");
+  if (list) {
+    list.addEventListener("change", e => {
+      const cb = e.target.closest("input[data-pick]");
+      if (!cb) return;
+      if (!aTogglePick(cb.dataset.pick, cb.checked)) { aRenderList(); aRenderAction(); return; }
+      const li = cb.closest(".arow");
+      if (li) li.classList.toggle("on", cb.checked);
+      aRenderAction();
+    });
+    list.addEventListener("click", e => {
+      if (e.target.closest("#aMore")) { astate.cap += LIST_CHUNK; aRenderList(); }
+    });
+  }
+  const none = $("#aSelNone");
+  if (none) none.addEventListener("click", () => { astate.sel = []; aRenderList(); aRenderAction(); });
+  const mk = $("#aMakeCard");
+  if (mk) mk.addEventListener("click", aMakeCard);
+}
+function aReset() {
+  astate.cmplx = astate.order[0] || "";
+  astate.deals = new Set(ASIL_DEALS);
+  astate.area = "all";
+  astate.dong = "all";
+  astate.sort = "date";
+  astate.sel = [];
+  astate.cap = LIST_CHUNK;
+  const period = (astate.data && astate.data.period) || {};
+  astate.from = /^\d{4}-\d{2}$/.test(period.from || "") ? period.from : "";
+  astate.to = /^\d{4}-\d{2}$/.test(period.to || "") ? period.to : "";
+  aSyncInputs();
+  aSaveView();
+  aRender();
+  toast("조회 조건을 초기화했습니다");
+}
+
 /* ============================ 도구함: 뷰 전환 ============================ */
 function switchView(name) {
   const target = $("#view-" + name);
   if (!target) return;
   $$(".navbtn").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === name)));
   $$(".view").forEach(v => v.classList.toggle("on", v === target));
-  if (name === "search") sRender();
+  if (name === "search") {
+    const api = $("#apiPane");
+    if (api && !api.hidden) sRender();
+    else aOnShow();
+  }
 }
 
 /* ============================ API 키 UI ============================ */
@@ -3504,6 +4263,7 @@ function init() {
   syncCustomRange();
   syncInputsFromState();
   sInit();
+  aInit();
   renderSavedFilters();
   if (!state.deals.length) loadSample();
   else refresh();
@@ -3525,7 +4285,8 @@ window.__app = {
   layoutHeader: (ctx, W, T, pad, hs, top) => layoutHeader(ctx, W, T, pad, hs, top),
   switchView, getApiKey, setApiKey, maskKey, renderKeyUI, openKeyModal, closeKeyModal, saveKeyFromModal,
   sstate, sRun, sRender, parseTradeXml, parseRentXml, normDong, sFilteredRows, sMakeCard, sRenderList,
-  SBANDS, sBandOf, sKwTokens, sRangeLabel, sTogglePick
+  SBANDS, sBandOf, sKwTokens, sRangeLabel, sTogglePick,
+  astate, aRender, aFiltered, aUnlock, aMakeCard, aSetMode, aLock, aRows: aBaseRows, aReady
 };
 
 document.addEventListener("DOMContentLoaded", init);
