@@ -2680,6 +2680,14 @@ function sKwTokens(kw) {
 }
 function sHay(r) { return `${r.name || ""} ${r.dong || ""}`.replace(/\s+/g, "").toLowerCase(); }
 function rentKind(r) { return Number(r.rent) > 0 ? "월세" : "전세"; }
+/* 마지막 글자 받침에 따라 ‘을/를’ */
+function josaEul(word) {
+  const s = String(word || "").trim();
+  if (!s) return "을";
+  const ch = s.charCodeAt(s.length - 1);
+  if (ch >= 0xAC00 && ch <= 0xD7A3) return ((ch - 0xAC00) % 28) ? "을" : "를";
+  return "을";
+}
 
 /* ---------- XML 파싱 (매매 · 전월세) ---------- */
 function rtmsDoc(text) {
@@ -3297,7 +3305,7 @@ function sBind() {
       sstate.apts.splice(i, 1);
       saveApts();
       sRenderApts();
-      if (a) toast(`‘${a.label}’을 관심 아파트에서 뺐습니다`);
+      if (a) toast(`‘${a.label}’${josaEul(a.label)} 관심 아파트에서 뺐습니다`);
       return;
     }
     const add = e.target.closest("#sAptAdd");
@@ -3308,7 +3316,7 @@ function sBind() {
       sstate.apts.push({ label: kw, kw });
       saveApts();
       sRenderApts();
-      toast(`‘${kw}’을 관심 아파트에 저장했습니다`);
+      toast(`‘${kw}’${josaEul(kw)} 관심 아파트에 저장했습니다`);
       return;
     }
     const chip = e.target.closest("[data-apt]");
@@ -3322,7 +3330,7 @@ function sBind() {
     sRender();
     saveSearch();
     if (!sstate.rows.length) {
-      setStatus("#sStatus", `관심 단지 <b>‘${esc(a.label)}’</b>을 골랐습니다. <b>불러오기</b>를 누르면 이 조건으로 조회합니다.`, "info");
+      setStatus("#sStatus", `관심 단지 <b>‘${esc(a.label)}’</b>${josaEul(a.label)} 골랐습니다. <b>불러오기</b>를 누르면 이 조건으로 조회합니다.`, "info");
       sPulseRun();
     }
   });
