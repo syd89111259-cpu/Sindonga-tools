@@ -356,6 +356,7 @@
   /* 필터 줄 */
   .afilters{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:#FBFCFE}
   .af{display:flex; align-items:center; gap:6px; min-width:0}
+  .af .dash{color:var(--muted); font-weight:800; font-size:11px; flex:none}
   .af > .lbl{white-space:nowrap; font-size:11.5px; font-weight:800; color:#475569}
   .af input[type=month]{width:134px; padding:6px 8px; font-size:12px; border-radius:8px}
   .af select{width:auto; min-width:98px; max-width:190px; padding:6px 26px 6px 9px; font-size:12px; border-radius:8px}
@@ -424,8 +425,11 @@
     .atable-wrap.all .atable-head,.atable-wrap.all .arow{min-width:0}
     .arow .a-price{order:9; flex:1 1 100%; font-size:14.5px; margin-top:1px}
     .a-selname{font-size:15.5px}
-    .af{flex:1 1 100%}
-    .af select,.af input[type=month]{flex:1 1 auto; max-width:none; width:auto}
+    .af{flex:1 1 100%; flex-wrap:wrap; row-gap:6px}
+    .af > .lbl{flex:0 0 auto}
+    .af select{flex:1 1 120px; min-width:0; max-width:none; width:auto}
+    .af input[type=month]{flex:1 1 110px; min-width:0; width:auto}
+    .af .dash{flex:0 0 auto}
     .acmplx{padding:9px 9px}
     .achip{padding:4px 8px; font-size:11.5px}
     .srcmode button{font-size:12px; padding:9px 8px; white-space:normal; line-height:1.25}
@@ -861,6 +865,8 @@
                 <option value="120">최근 10년</option>
                 <option value="custom">직접 지정</option>
               </select>
+            </div>
+            <div class="af af-range">
               <input type="month" id="aFrom" aria-label="시작월">
               <span class="dash">~</span>
               <input type="month" id="aTo" aria-label="끝월">
