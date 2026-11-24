@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>신동아부동산 도구함 | 신동아공인중개사사무소</title>
-<meta name="description" content="신동아공인중개사사무소 실무 도구 모음 — 국토교통부 실거래가로 SNS 카드 이미지를 만드는 도구함">
+<meta name="description" content="신동아공인중개사사무소 실무 도구 모음 — 국토교통부 실거래가 조회(매매·전월세·동별)와 카드 이미지 생성">
 <meta name="referrer" content="no-referrer">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563EB'/%3E%3Ctext x='50' y='70' font-size='54' font-family='sans-serif' font-weight='700' fill='white' text-anchor='middle'%3E%EC%8B%A0%3C/text%3E%3C/svg%3E">
 <style>
@@ -254,6 +254,82 @@
   .empty{padding:22px 10px; text-align:center; color:var(--muted); font-size:12.5px}
   .mini{font-size:11px; color:#94A3B8}
   .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; background:#F1F4F9; border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+  /* ---------- 🔍 실거래 조회 ---------- */
+  .srch{max-width:1180px; margin:0 auto; padding:20px; display:flex; flex-direction:column; gap:16px}
+  .sp{flex:1 1 auto}
+  .seg{display:inline-flex; gap:4px; background:#F1F4F9; padding:4px; border-radius:12px; flex-wrap:wrap; max-width:100%}
+  .seg button{
+    border:0; background:transparent; padding:8px 14px; border-radius:9px; font-weight:800; font-size:12.5px;
+    color:var(--muted); cursor:pointer; white-space:nowrap; transition:.15s;
+  }
+  .seg button:hover{color:#243044}
+  .seg button[aria-pressed="true"]{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(16,24,40,.12)}
+  .seg button[aria-pressed="true"][data-type="rent"],
+  .seg button[aria-pressed="true"][data-type="jeonse"],
+  .seg button[aria-pressed="true"][data-type="wolse"]{color:#1D4ED8}
+  .sum{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:12px}
+  .sum-cell{border:1px solid var(--line); border-radius:12px; padding:9px 11px; background:#FBFCFF; min-width:0}
+  .sum-cell .k{font-size:11px; font-weight:800; color:var(--muted); white-space:nowrap}
+  .sum-cell .v{font-size:15.5px; font-weight:800; letter-spacing:-.4px; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px}
+  .sum-cell .s{font-size:11px; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .sum-cell.hi .v{color:var(--accent-ink)}
+  .filters{display:flex; flex-direction:column; gap:10px}
+  .chipbar{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+  .chipbar.scrolly{max-height:96px; overflow-y:auto; padding-right:2px}
+  .chipbar .cl{font-size:11.5px; font-weight:800; color:var(--muted); margin-right:2px; white-space:nowrap}
+  .dchip{
+    border:1px solid var(--line); background:#fff; border-radius:999px; padding:5px 11px; font-size:12px;
+    font-weight:800; color:#334155; cursor:pointer; white-space:nowrap; font-variant-numeric:tabular-nums; transition:.12s;
+  }
+  .dchip:hover{border-color:#BFD5FE; background:#F7FAFF}
+  .dchip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 3px 10px rgba(37,99,235,.22)}
+  .dchip .n{opacity:.62; font-weight:700; margin-left:2px}
+  .note-line{font-size:11.5px; color:var(--muted); line-height:1.5}
+  .slist-wrap{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff}
+  .slist-head, .srow{display:grid; gap:8px; align-items:center; padding:9px 11px}
+  .slist-head{background:#F7F9FC; border-bottom:1px solid var(--line); font-size:10.5px; font-weight:800; color:var(--muted); letter-spacing:.2px}
+  .slist-wrap.trade .slist-head, .slist-wrap.trade .srow{grid-template-columns:22px 50px minmax(0,1fr) 74px 40px 104px 62px 52px}
+  .slist-wrap.rent .slist-head, .slist-wrap.rent .srow{grid-template-columns:22px 50px minmax(0,1fr) 46px 74px 40px 118px 116px}
+  .slist{list-style:none; margin:0; padding:0; max-height:640px; overflow:auto; -webkit-overflow-scrolling:touch}
+  .srow{border-bottom:1px solid #EEF1F6; font-size:12.5px}
+  .srow:last-child{border-bottom:0}
+  .srow:hover{background:#FAFCFF}
+  .srow.on{background:var(--accent-soft)}
+  .srow input[type=checkbox]{width:16px; height:16px; accent-color:var(--accent); margin:0; cursor:pointer}
+  .srow .c-chk{display:grid; place-items:center}
+  .c-date{color:var(--muted); font-size:11.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .c-name{min-width:0; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .c-name .tg{display:inline-block; font-style:normal; font-size:10.5px; font-weight:800; color:#1D4ED8; background:#E8F0FF; border-radius:5px; padding:1px 4px; margin-left:4px; vertical-align:1px}
+  .c-name .tg.no{color:#8A6D3B; background:#FEF3C7}
+  .c-py,.c-floor,.c-kind,.c-type{white-space:nowrap; font-size:11.5px; color:#475569}
+  .c-py b{display:block; font-weight:700; font-size:11.5px; color:#334155; letter-spacing:-.2px}
+  .c-py em{display:block; font-style:normal; font-size:10px; color:#94A3B8; font-weight:600}
+  .chipbar.scrolly{scrollbar-width:thin}
+  .c-amt{font-weight:800; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--accent-ink)}
+  .c-amt .mo{display:block; font-size:10.5px; font-weight:700; color:#B45309; letter-spacing:0}
+  .c-reg,.c-cont{white-space:nowrap; font-size:11px; color:var(--muted)}
+  .c-cont em{display:block; font-style:normal; font-size:10px; color:#94A3B8; margin-top:1px; overflow:hidden; text-overflow:ellipsis}
+  .pill{display:inline-block; font-size:10px; font-weight:800; border-radius:5px; padding:1px 5px}
+  .pill.ok{background:#DCFCE7; color:#166534}
+  .pill.dim{background:#F1F5F9; color:#64748B}
+  .pill.ren{background:#FFF7ED; color:#B45309}
+  .pill.newd{background:#EEF4FF; color:#1D4ED8}
+  .pill.rr{background:#FDF2F8; color:#9D174D; margin-left:3px}
+  .c-mob{display:none}
+  .more-row{display:flex; justify-content:center; padding:10px; border-bottom:0; background:#FBFDFF}
+  @media (max-width:900px){
+    .sum{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:760px){
+    .srch{padding:12px 10px; gap:12px}
+    .slist-head{display:none}
+    .slist-wrap.trade .srow, .slist-wrap.rent .srow{display:flex; flex-wrap:wrap; gap:3px 8px; padding:10px 11px}
+    .srow .c-chk{order:1}
+    .srow .c-name{order:2; flex:1 1 auto}
+    .srow .c-amt{order:3; margin-left:auto; text-align:right; font-size:13px}
+    .srow .c-date, .srow .c-py, .srow .c-floor, .srow .c-kind, .srow .c-type, .srow .c-reg, .srow .c-cont{display:none}
+    .srow .c-mob{display:block; order:4; flex:1 0 100%; font-size:11px; color:var(--muted); line-height:1.5; padding-left:24px}
+  }
   @media (max-width:1080px){
     .layout{grid-template-columns:1fr; padding:14px; gap:14px}
     .col-preview{position:static; order:-1}
@@ -303,6 +379,7 @@
     <div class="appbar-sp"></div>
     <nav class="nav" role="tablist" aria-label="도구 전환">
       <button class="navbtn" role="tab" data-view="cardmaker" aria-selected="true">📊 실거래가 카드 생성기</button>
+      <button class="navbtn" role="tab" data-view="search" aria-selected="false">🔍 실거래 조회</button>
       <button class="navbtn" role="tab" data-view="coming" aria-selected="false">➕ 준비 중인 도구<span class="soon">예정</span></button>
     </nav>
     <button class="keybtn off" id="btnKeyOpen" title="공공데이터포털 인증키를 저장합니다"><span class="dot"></span><span class="kb-txt" id="keyBtnLabel">🔑 API 키 설정</span></button>
@@ -610,6 +687,124 @@
 </div>
 </main>
 
+<main class="view" id="view-search">
+<div class="srch">
+
+  <!-- ============ 1. 조회 조건 ============ -->
+  <section class="card">
+    <div class="card-h" style="padding-bottom:10px">
+      <h2>1. 조회 조건</h2>
+      <span class="hint" id="sTypeHint">국토교통부 매매 실거래가</span>
+    </div>
+    <div class="card-b">
+      <div class="seg" id="sType" role="group" aria-label="거래 유형">
+        <button type="button" data-type="trade" aria-pressed="true">매매</button>
+        <button type="button" data-type="rent" aria-pressed="false">전월세(전체)</button>
+        <button type="button" data-type="jeonse" aria-pressed="false">전세</button>
+        <button type="button" data-type="wolse" aria-pressed="false">월세</button>
+      </div>
+
+      <div class="preset-wrap" id="sPresets" style="margin-top:10px"></div>
+
+      <div class="row">
+        <div class="f" style="width:112px">
+          <label class="lbl">지역코드(5자리)</label>
+          <input type="text" id="sCode" value="41173" maxlength="5" inputmode="numeric">
+        </div>
+        <div class="f" style="width:122px">
+          <label class="lbl">계약년월</label>
+          <input type="text" id="sYm" maxlength="6" inputmode="numeric" placeholder="202611">
+        </div>
+        <div class="f grow">
+          <label class="lbl">단지명 (여러 개는 쉼표 · 슬래시 · 공백)</label>
+          <input type="text" id="sKw" placeholder="예: 목련 / 평촌센텀퍼스트">
+        </div>
+      </div>
+
+      <div class="filter-saved" id="sApts" aria-label="내 관심 아파트"></div>
+
+      <div class="row" style="margin-top:10px">
+        <div class="f" style="width:150px">
+          <label class="lbl">기간</label>
+          <select id="sMonths">
+            <option value="1">해당 월</option>
+            <option value="2">최근 2개월</option>
+            <option value="3" selected>최근 3개월</option>
+            <option value="6">최근 6개월</option>
+            <option value="12">최근 12개월</option>
+            <option value="custom">기간 직접 지정</option>
+          </select>
+        </div>
+        <div class="f grow" id="sCustomRow" hidden>
+          <label class="lbl">시작월 ~ 끝월 (최대 24개월)</label>
+          <div class="mrange">
+            <input type="month" id="sFromYm" aria-label="시작월">
+            <span class="dash">~</span>
+            <input type="month" id="sToYm" aria-label="끝월">
+          </div>
+        </div>
+        <button class="btn primary" id="sRun" style="height:38px">불러오기</button>
+      </div>
+      <div class="range-hint" id="sRangeHint" hidden></div>
+      <div class="status" id="sStatus"></div>
+      <div class="note" style="margin-top:9px">
+        매매는 <b>동 · 등기 여부</b>까지, 전월세는 <b>계약구분(신규/갱신)</b>까지 국토교통부 공개자료 그대로 보여 줍니다.<br>
+        <span class="mini">API 키는 이 브라우저에만 저장 · 기간 1개월 = 1회 호출 · 전월세는 국토부 정책상 동 정보가 제공되지 않습니다.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. 시세 요약 + 목록 ============ -->
+  <section class="card">
+    <div class="card-h">
+      <h2>2. 시세 요약 · 상세</h2>
+      <span class="hint" id="sCond">불러오기를 누르면 조건이 표시됩니다</span>
+    </div>
+    <div class="card-b">
+      <div class="sum" id="sSum"></div>
+
+      <div class="filters">
+        <div id="sDongWrap">
+          <div class="chipbar scrolly" id="sDongBar"></div>
+          <label class="chkline" id="sNoDongLine" style="margin-top:8px"><input type="checkbox" id="sWithNoDong" checked> 동 미공개(등기전) 함께 보기<span class="mini" id="sNoDongCount"></span></label>
+        </div>
+        <div id="sRentWrap" hidden>
+          <div class="chipbar" id="sContractBar"></div>
+          <div class="note-line" style="margin-top:7px">ⓘ 전월세는 국토부 정책상 동 정보가 제공되지 않습니다. 그래서 동별 필터 대신 <b>계약구분</b>으로 봅니다.</div>
+        </div>
+        <div class="chipbar" id="sBandBar"></div>
+        <div class="row" style="margin-top:2px">
+          <div class="f" style="width:160px">
+            <label class="lbl">정렬</label>
+            <select id="sSort">
+              <option value="date">최신순</option>
+              <option value="price-desc">높은 가격순</option>
+              <option value="price-asc">낮은 가격순</option>
+              <option value="dong-floor">동·층순</option>
+            </select>
+          </div>
+          <div class="sp"></div>
+          <span class="note" id="sSelHint">카드로 만들 거래를 체크하세요 · 최대 8건</span>
+        </div>
+      </div>
+
+      <div class="slist-wrap trade" id="sListWrap" style="margin-top:12px">
+        <div class="slist-head" id="sHead"></div>
+        <ul class="slist" id="sList"></ul>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <span class="mini" id="sSelCount">0 / 8 선택</span>
+        <div class="sp"></div>
+        <button class="btn sm ghost" id="sSelNone" type="button">선택 해제</button>
+        <button class="btn primary" id="sMakeCard" type="button" disabled>선택 건 카드로 만들기</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</main>
+
 <main class="view" id="view-coming">
   <div class="coming">
     <div class="card">
@@ -622,7 +817,7 @@
           <div class="coming-item"><b>🏠 임장 노트</b><span class="mini">준비 중</span></div>
           <div class="coming-item"><b>✍️ 전자계약 체크리스트</b><span class="mini">준비 중</span></div>
         </div>
-        <p class="note" style="margin-top:14px">지금 쓰는 도구: <b>📊 실거래가 카드 생성기</b> — 국토교통부 실거래가로 카톡·블로그용 카드 이미지와 글을 만듭니다.</p>
+        <p class="note" style="margin-top:14px">지금 쓰는 도구: <b>📊 실거래가 카드 생성기</b> — 국토교통부 실거래가로 카톡·블로그용 카드 이미지와 글을 만듭니다. · <b>🔍 실거래 조회</b> — 매매·전월세를 동별·평형별로 조회합니다(조회 결과에서 골라 바로 카드로).</p>
       </div>
     </div>
   </div>
@@ -1962,12 +2157,14 @@ function ymRangeDesc(fromYm, toYm) {
   return out;
 }
 
-/* 화면의 기간 설정을 읽어 실제 조회 월 목록을 만든다 */
-function readApiRange() {
-  const mode = $("#apiMonths").value;
+/* 화면의 기간 설정을 읽어 실제 조회 월 목록을 만든다 (sel로 다른 화면의 입력칸을 지정) */
+const RANGE_SEL = { months: "#apiMonths", ym: "#apiYm", from: "#apiFromYm", to: "#apiToYm" };
+function readApiRange(sel) {
+  sel = sel || RANGE_SEL;
+  const mode = $(sel.months).value;
   if (mode === "custom") {
-    let from = inputToYm($("#apiFromYm").value);
-    let to = inputToYm($("#apiToYm").value);
+    let from = inputToYm($(sel.from).value);
+    let to = inputToYm($(sel.to).value);
     const okFrom = /^\d{6}$/.test(from), okTo = /^\d{6}$/.test(to);
     if (!okFrom && !okTo) return { error: "시작월과 끝월을 먼저 골라 주세요." };
     if (!okFrom) from = to;
@@ -1985,8 +2182,8 @@ function readApiRange() {
     return { mode: "custom", list, from, to, months: list.length, warn };
   }
   const n = parseInt(mode, 10) || 1;
-  const anchor = ($("#apiYm").value || "").trim();
-  if (!/^\d{6}$/.test(anchor)) return { error: "계약년월은 6자리로 입력해 주세요. 예: 202611", focus: "#apiYm" };
+  const anchor = ($(sel.ym).value || "").trim();
+  if (!/^\d{6}$/.test(anchor)) return { error: "계약년월은 6자리로 입력해 주세요. 예: 202611", focus: sel.ym };
   const list = ymList(anchor, n);
   return { mode: "recent", list, from: list[list.length - 1], to: list[0], months: list.length, warn: "" };
 }
@@ -2439,12 +2636,773 @@ function loadSample() {
   refresh();
 }
 
+/* ============================ 🔍 실거래 조회 ============================ */
+const RENT_API_BASE = "https://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent";
+const APT_STORE = "shindonga.savedApts.v1";
+const SRCH_STORE = "shindonga.search.v1";
+const DEFAULT_APTS = [
+  { label: "목련 1~9단지", kw: "목련" },
+  { label: "평촌센텀퍼스트", kw: "평촌센텀퍼스트" }
+];
+const STYPE_LABEL = { trade: "매매", rent: "전월세", jeonse: "전세", wolse: "월세" };
+const SBANDS = [
+  { key: "all", label: "전체" },
+  { key: "10", label: "20평 미만", min: 0, max: 19 },
+  { key: "20", label: "20평대", min: 20, max: 29 },
+  { key: "30", label: "30평대", min: 30, max: 39 },
+  { key: "40", label: "40평대", min: 40, max: 49 },
+  { key: "50", label: "50평대", min: 50, max: 9999 }
+];
+const S_RANGE_IDS = { months: "#sMonths", ym: "#sYm", from: "#sFromYm", to: "#sToYm" };
+
+const sstate = {
+  type: "trade", kind: "", code: "41173", ym: "", months: "3", from: "", to: "",
+  kw: "", dong: "", withNoDong: true, band: "all", sort: "date", contract: "",
+  rows: [], sel: [], cap: 300, apts: DEFAULT_APTS.map(x => ({ label: x.label, kw: x.kw })),
+  place: "", rangeLabel: "", subtitle: ""
+};
+let sIdSeq = 1;
+const sIsRent = () => sstate.type !== "trade";
+
+function sText(v) { return String(v == null ? "" : v).replace(/\u00a0/g, " ").trim(); }
+function sNum(v) { const s = sText(v); return s ? parseAmount(s) : 0; }
+/* 116 · 207동 · 제207 · 116 동 → 116동 / 207동 */
+function normDong(v) {
+  const raw = sText(v).replace(/\s+/g, "");
+  if (!raw) return "";
+  const s = raw.replace(/^제/, "").replace(/동$/, "");
+  const m = /^(\d+)$/.exec(s);
+  if (m) return `${parseInt(m[1], 10)}동`;
+  return raw;
+}
+function sKwTokens(kw) {
+  return String(kw || "").split(/[,/|\s]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
+}
+function sHay(r) { return `${r.name || ""} ${r.dong || ""}`.replace(/\s+/g, "").toLowerCase(); }
+function rentKind(r) { return Number(r.rent) > 0 ? "월세" : "전세"; }
+
+/* ---------- XML 파싱 (매매 · 전월세) ---------- */
+function rtmsDoc(text) {
+  const doc = new DOMParser().parseFromString(text, "application/xml");
+  if (doc.querySelector("parsererror")) throw new Error("XML 형식이 아니어서 읽을 수 없습니다.");
+  const rc = doc.querySelector("resultCode");
+  if (rc && rc.textContent.trim() !== "000") {
+    const msg = doc.querySelector("resultMsg");
+    throw new Error("API 오류: " + (msg ? msg.textContent.trim() : rc.textContent.trim()));
+  }
+  const tc = doc.querySelector("totalCount");
+  return { doc, total: tc ? (parseInt(tc.textContent.trim(), 10) || 0) : 0 };
+}
+function rtmsDate(g) {
+  const y = sText(g("dealYear")), m = sText(g("dealMonth")), d = sText(g("dealDay"));
+  if (!y || !m || !d) return "";
+  return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+}
+function parseTradeXml(text) {
+  const { doc, total } = rtmsDoc(text);
+  const items = Array.from(doc.querySelectorAll("item"));
+  const rows = [];
+  let canceled = 0;
+  items.forEach(it => {
+    const g = k => { const el = it.querySelector(k); return el ? el.textContent : ""; };
+    if (sText(g("cdealType")) === "O") { canceled++; return; }
+    const date = rtmsDate(g);
+    if (!date) return;
+    const dong = sText(g("umdNm"));
+    rows.push({
+      kind: "trade",
+      name: normalizeAptName(sText(g("aptNm")), dong, sText(g("jibun")), sText(g("roadNm")), sText(g("roadNmBonbun"))),
+      dong, aptDong: normDong(g("aptDong")),
+      jibun: sText(g("jibun")), roadNm: sText(g("roadNm")), roadBonbun: sText(g("roadNmBonbun")),
+      floor: sText(g("floor")), area: parseFloat(sText(g("excluUseAr"))) || 0,
+      amount: sNum(g("dealAmount")), deposit: 0, rent: 0,
+      type: sText(g("dealingGbn")) === "직거래" ? "직거래" : "중개",
+      rgst: sText(g("rgstDate")), date,
+      contractType: "", preDeposit: null, preRent: null, useRR: false, term: "", aptSeq: sText(g("aptSeq"))
+    });
+  });
+  return { rows, canceled, total, count: items.length };
+}
+function parseRentXml(text) {
+  const { doc, total } = rtmsDoc(text);
+  const items = Array.from(doc.querySelectorAll("item"));
+  const rows = [];
+  items.forEach(it => {
+    const g = k => { const el = it.querySelector(k); return el ? el.textContent : ""; };
+    const date = rtmsDate(g);
+    if (!date) return;
+    const dong = sText(g("umdNm"));
+    const dep = sNum(g("deposit"));
+    rows.push({
+      kind: "rent",
+      name: normalizeAptName(sText(g("aptNm")), dong, sText(g("jibun")), sText(g("roadnm")), sText(g("roadnmbonbun"))),
+      dong, aptDong: "",
+      jibun: sText(g("jibun")), roadNm: sText(g("roadnm")), roadBonbun: sText(g("roadnmbonbun")),
+      floor: sText(g("floor")), area: parseFloat(sText(g("excluUseAr"))) || 0,
+      amount: dep, deposit: dep, rent: sNum(g("monthlyRent")),
+      type: "", rgst: "", date,
+      contractType: sText(g("contractType")),
+      preDeposit: sText(g("preDeposit")) ? sNum(g("preDeposit")) : null,
+      preRent: sText(g("preMonthlyRent")) ? sNum(g("preMonthlyRent")) : null,
+      useRR: sText(g("useRRRight")) === "사용",
+      term: sText(g("contractTerm")), aptSeq: sText(g("aptSeq"))
+    });
+  });
+  return { rows, canceled: 0, total, count: items.length };
+}
+
+/* ---------- 필터 · 정렬 ---------- */
+function sTypeRows(all) {
+  if (sstate.type === "jeonse") return all.filter(r => r.kind === "rent" && Number(r.rent) === 0);
+  if (sstate.type === "wolse") return all.filter(r => r.kind === "rent" && Number(r.rent) > 0);
+  return all.slice();
+}
+function sKwRows(all) {
+  const kws = sKwTokens(sstate.kw);
+  if (!kws.length) return all;
+  const strict = all.filter(r => { const h = sHay(r); return kws.every(k => h.includes(k)); });
+  if (strict.length) return strict;
+  return all.filter(r => { const h = sHay(r); return kws.some(k => h.includes(k)); });
+}
+function sBandOf(r) {
+  const p = calcSupplyPyeong(r.name, r.area);
+  if (!p) return null;
+  const b = SBANDS.find(x => x.min != null && p >= x.min && p <= x.max);
+  return b ? b.key : null;
+}
+function sPoolRows() { return sKwRows(sTypeRows(sstate.rows)); }
+function sDongRows(all) {
+  if (!sstate.dong) return all;
+  return all.filter(r => r.aptDong === sstate.dong || (sstate.withNoDong && !r.aptDong));
+}
+function sContractRows(all) {
+  if (!sIsRent() || !sstate.contract) return all;
+  return all.filter(r => r.contractType === sstate.contract);
+}
+function sSortRows(arr) {
+  const by = sstate.sort;
+  const num = v => parseInt(String(v || "").replace(/[^\d]/g, ""), 10) || 0;
+  return arr.slice().sort((a, b) => {
+    if (by === "price-desc") return b.amount - a.amount || (b.date || "").localeCompare(a.date || "");
+    if (by === "price-asc") return a.amount - b.amount || (b.date || "").localeCompare(a.date || "");
+    if (by === "dong-floor") {
+      const da = num(a.aptDong) || 1e6, db = num(b.aptDong) || 1e6;
+      if (da !== db) return da - db;
+      if (num(b.floor) !== num(a.floor)) return num(b.floor) - num(a.floor);
+      return (b.date || "").localeCompare(a.date || "");
+    }
+    return (b.date || "").localeCompare(a.date || "") || b.amount - a.amount;
+  });
+}
+function sFilteredRows() {
+  let arr = sContractRows(sDongRows(sPoolRows()));
+  if (sstate.band !== "all") arr = arr.filter(r => sBandOf(r) === sstate.band);
+  return sSortRows(arr);
+}
+
+/* ---------- 화면 그리기 ---------- */
+function sumCell(k, v, s, hi) {
+  return `<div class="sum-cell${hi ? " hi" : ""}"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div><div class="s">${esc(s || "")}</div></div>`;
+}
+function sCondText() {
+  const bits = [];
+  const p = PRESETS.find(x => x.code === sstate.code);
+  bits.push(p ? p.name : sstate.code);
+  bits.push(STYPE_LABEL[sstate.type]);
+  if (sstate.rangeLabel) bits.push(sstate.rangeLabel);
+  if (sstate.kw) bits.push(`‘${sstate.kw}’`);
+  if (!sIsRent()) {
+    if (sstate.dong) bits.push(sstate.dong);
+    if (sstate.dong && !sstate.withNoDong) bits.push("동 미공개 제외");
+  } else if (sstate.contract) bits.push(sstate.contract);
+  if (sstate.band !== "all") {
+    const b = SBANDS.find(x => x.key === sstate.band);
+    if (b) bits.push(b.label);
+  }
+  return bits.filter(Boolean).join(" · ");
+}
+function sRenderSum() {
+  const box = $("#sSum");
+  if (!box) return;
+  const cond = $("#sCond");
+  if (cond) cond.textContent = sCondText();
+  const arr = sFilteredRows();
+  if (!arr.length) {
+    box.innerHTML = sumCell("건수", "0건", sstate.rows.length ? "조건에 맞는 거래가 없습니다" : "아직 불러오지 않았습니다", true);
+    return;
+  }
+  const latest = arr.slice().sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.amount - a.amount)[0];
+  const max = arr.reduce((m, r) => (r.amount > m.amount ? r : m), arr[0]);
+  const min = arr.reduce((m, r) => (r.amount < m.amount ? r : m), arr[0]);
+  const where = r => `${r.name}${r.aptDong ? " " + r.aptDong : ""}`;
+  if (sIsRent()) {
+    const jeon = arr.filter(r => Number(r.rent) === 0).length;
+    const wol = arr.length - jeon;
+    const wolSum = arr.filter(r => Number(r.rent) > 0).reduce((s, r) => s + Number(r.rent || 0), 0);
+    box.innerHTML =
+      sumCell("건수", `${arr.length.toLocaleString("ko-KR")}건`, `전세 ${jeon} · 월세 ${wol}${wol ? ` · 평균 월세 ${Math.round(wolSum / wol).toLocaleString("ko-KR")}만` : ""}`, true) +
+      sumCell("최근 보증금", wonText(latest.deposit), `${dateLong(latest.date)} · ${rentKind(latest)}`, true) +
+      sumCell("최고 보증금", wonText(max.deposit), where(max)) +
+      sumCell("최저 보증금", wonText(min.deposit), where(min));
+    return;
+  }
+  const dongN = new Set(arr.map(r => r.aptDong).filter(Boolean)).size;
+  const won = arr.filter(r => r.type === "직거래").length;
+  box.innerHTML =
+    sumCell("건수", `${arr.length.toLocaleString("ko-KR")}건`, `${dongN ? dongN + "개 동 · " : ""}직거래 ${won}건`, true) +
+    sumCell("최근 거래가", wonText(latest.amount), `${dateLong(latest.date)} · ${latest.name}`, true) +
+    sumCell("최고가", wonText(max.amount), where(max)) +
+    sumCell("최저가", wonText(min.amount), where(min));
+}
+function sRenderDongChips() {
+  const bar = $("#sDongBar");
+  if (!bar) return;
+  const pool = sPoolRows();
+  const counts = new Map();
+  let noDong = 0;
+  pool.forEach(r => {
+    if (!r.aptDong) { noDong++; return; }
+    counts.set(r.aptDong, (counts.get(r.aptDong) || 0) + 1);
+  });
+  const num = v => parseInt(String(v || "").replace(/[^\d]/g, ""), 10) || 1e6;
+  const dongs = Array.from(counts.keys()).sort((a, b) => num(a) - num(b) || a.localeCompare(b, "ko"));
+  if (sstate.dong && !counts.has(sstate.dong)) sstate.dong = "";
+  bar.innerHTML = `<span class="cl">동</span>` +
+    `<button type="button" class="dchip" data-dong="" aria-pressed="${!sstate.dong}">전체 <span class="n">${pool.length}</span></button>` +
+    dongs.map(d => `<button type="button" class="dchip" data-dong="${esc(d)}" aria-pressed="${sstate.dong === d}">${esc(d)} <span class="n">${counts.get(d)}</span></button>`).join("");
+  const cnt = $("#sNoDongCount");
+  if (cnt) cnt.textContent = noDong ? ` · ${noDong.toLocaleString("ko-KR")}건` : " · 0건";
+  const line = $("#sNoDongLine");
+  if (line) {
+    line.style.opacity = sstate.dong ? "1" : ".55";
+    line.title = sstate.dong ? "특정 동을 봐도 등기 전(동 공백) 계약을 함께 볼지 정합니다" : "동을 하나 고르면 쓸 수 있습니다";
+  }
+}
+function sRenderContractBar() {
+  const bar = $("#sContractBar");
+  if (!bar) return;
+  const pool = sPoolRows();
+  const n = t => (t ? pool.filter(r => r.contractType === t).length : pool.length);
+  bar.innerHTML = `<span class="cl">계약구분</span>` +
+    [{ k: "", l: "전체" }, { k: "신규", l: "신규" }, { k: "갱신", l: "갱신" }]
+      .map(o => `<button type="button" class="dchip" data-contract="${o.k}" aria-pressed="${sstate.contract === o.k}">${o.l} <span class="n">${n(o.k)}</span></button>`).join("");
+}
+function sRenderBandBar() {
+  const bar = $("#sBandBar");
+  if (!bar) return;
+  const base = sContractRows(sDongRows(sPoolRows()));
+  const counts = {};
+  base.forEach(r => { const k = sBandOf(r); if (k) counts[k] = (counts[k] || 0) + 1; });
+  bar.innerHTML = `<span class="cl">공급평형</span>` + SBANDS.map(b => {
+    const n = b.key === "all" ? base.length : (counts[b.key] || 0);
+    return `<button type="button" class="dchip" data-band="${b.key}" aria-pressed="${sstate.band === b.key}">${b.label} <span class="n">${n}</span></button>`;
+  }).join("");
+}
+function sTradeRow(r) {
+  const on = sstate.sel.includes(r.id);
+  const py = supplyPyeongText(r.name, r.area) || "-";
+  const meta = [
+    dateLong(r.date), r.aptDong || "동 미공개", `${py} (전용 ${m2Text1(r.area)}㎡)`,
+    r.floor ? `${r.floor}층` : "", r.type, r.rgst ? "등기완료" : "등기전"
+  ].filter(Boolean).join(" · ");
+  return `<li class="srow${on ? " on" : ""}" data-id="${r.id}">
+    <span class="c-chk"><input type="checkbox" data-pick="${r.id}" ${on ? "checked" : ""} aria-label="${esc(r.name)} ${esc(r.aptDong)} 선택"></span>
+    <span class="c-date">${esc(dateShort(r.date))}</span>
+    <span class="c-name" title="${esc(r.name)} (${esc(r.dong)})"><b>${esc(r.name)}</b>${r.aptDong ? `<em class="tg">${esc(r.aptDong)}</em>` : `<em class="tg no">동 미공개</em>`}</span>
+    <span class="c-py" title="공급 ${esc(py)} · 전용 ${esc(m2Text1(r.area))}㎡${supplyInfo(r.name, r.area).exact ? "" : " (추정)"}"><b>${esc(py)}</b><em>${esc(m2Text1(r.area))}㎡</em></span>
+    <span class="c-floor">${r.floor ? esc(r.floor) + "층" : "-"}</span>
+    <span class="c-amt">${wonText(r.amount)}</span>
+    <span class="c-type">${r.type === "직거래" ? `<span class="tag direct">직거래</span>` : "중개"}</span>
+    <span class="c-reg">${r.rgst ? `<span class="pill ok" title="등기일 ${esc(r.rgst)}">등기</span>` : `<span class="pill dim" title="등기 전(최근 계약)">미등기</span>`}</span>
+    <span class="c-mob">${esc(meta)}</span>
+  </li>`;
+}
+function sRentRow(r) {
+  const py = supplyPyeongText(r.name, r.area) || "-";
+  const kind = rentKind(r);
+  const ct = r.contractType || "신규";
+  const pre = r.preDeposit != null
+    ? `종전 ${wonText(r.preDeposit)}${Number(r.preRent) > 0 ? " / 월 " + Number(r.preRent).toLocaleString("ko-KR") + "만" : ""}`
+    : "";
+  const meta = [
+    dateLong(r.date), r.dong, `${py} (전용 ${m2Text1(r.area)}㎡)`,
+    r.floor ? `${r.floor}층` : "", ct + (r.useRR ? " · 갱신요구권 사용" : ""), pre
+  ].filter(Boolean).join(" · ");
+  return `<li class="srow" data-id="${r.id}">
+    <span class="c-chk"></span>
+    <span class="c-date">${esc(dateShort(r.date))}</span>
+    <span class="c-name" title="${esc(r.name)} (${esc(r.dong)})"><b>${esc(r.name)}</b></span>
+    <span class="c-kind">${kind === "월세" ? `<span class="pill ren">월세</span>` : `<span class="pill newd">전세</span>`}</span>
+    <span class="c-py" title="공급 ${esc(py)} · 전용 ${esc(m2Text1(r.area))}㎡${supplyInfo(r.name, r.area).exact ? "" : " (추정)"}"><b>${esc(py)}</b><em>${esc(m2Text1(r.area))}㎡</em></span>
+    <span class="c-floor">${r.floor ? esc(r.floor) + "층" : "-"}</span>
+    <span class="c-amt">${wonText(r.deposit)}${Number(r.rent) > 0 ? `<span class="mo">월 ${Number(r.rent).toLocaleString("ko-KR")}만</span>` : ""}</span>
+    <span class="c-cont"><span class="pill ${ct === "갱신" ? "ren" : "newd"}">${esc(ct)}</span>${r.useRR ? ` <span class="pill rr" title="갱신요구권 사용">권리</span>` : ""}${pre ? `<em title="${esc(pre + (r.term ? " (" + r.term + ")" : ""))}">${esc(pre)}</em>` : ""}</span>
+    <span class="c-mob">${esc(meta)}</span>
+  </li>`;
+}
+function sRenderList() {
+  const ul = $("#sList");
+  if (!ul) return;
+  const rent = sIsRent();
+  const wrap = $("#sListWrap");
+  if (wrap) wrap.className = "slist-wrap " + (rent ? "rent" : "trade");
+  const head = $("#sHead");
+  if (head) head.innerHTML = rent
+    ? `<span></span><span>계약일</span><span>단지명</span><span>구분</span><span>평형</span><span>층</span><span>보증금 / 월세</span><span>계약구분</span>`
+    : `<span></span><span>계약일</span><span>단지명</span><span>평형</span><span>층</span><span>거래금액</span><span>거래유형</span><span>등기</span>`;
+  if (!sstate.rows.length) {
+    ul.innerHTML = `<li class="empty">아직 불러온 거래가 없습니다.<br>위에서 지역·기간을 고르고 <b>불러오기</b>를 눌러 주세요.</li>`;
+    return;
+  }
+  if (sstate.kind && sstate.kind !== (rent ? "rent" : "trade")) {
+    const was = sstate.kind === "rent" ? "전월세" : "매매";
+    ul.innerHTML = `<li class="empty">지금 화면은 <b>${STYPE_LABEL[sstate.type]}</b>인데 마지막 조회는 <b>${was}</b>입니다.<br><b>불러오기</b>를 누르면 ${STYPE_LABEL[sstate.type]}를 새로 조회합니다.</li>`;
+    return;
+  }
+  const arr = sFilteredRows();
+  const shown = Math.min(arr.length, sstate.cap);
+  if (!arr.length) {
+    ul.innerHTML = `<li class="empty">조건에 맞는 거래가 없습니다.<br>평형대·동·단지명 필터를 풀어 보세요.</li>`;
+    return;
+  }
+  ul.innerHTML = arr.slice(0, shown).map(rent ? sRentRow : sTradeRow).join("") +
+    (arr.length > shown
+      ? `<li class="more-row"><button class="btn sm ghost" id="sMore" type="button">더 보기 (${(arr.length - shown).toLocaleString("ko-KR")}건 남음)</button></li>`
+      : "");
+}
+function sRenderAction() {
+  const n = sstate.sel.length;
+  const c = $("#sSelCount");
+  if (c) c.textContent = `${n} / 8 선택`;
+  const btn = $("#sMakeCard");
+  if (btn) btn.disabled = sIsRent() || !n;
+  const hint = $("#sSelHint");
+  if (hint) hint.textContent = sIsRent() ? "카드 만들기는 매매 조회에서 쓸 수 있습니다" : "카드로 만들 거래를 체크하세요 · 최대 8건";
+}
+function sRender() {
+  const rent = sIsRent();
+  const dw = $("#sDongWrap"); if (dw) dw.hidden = rent;
+  const rw = $("#sRentWrap"); if (rw) rw.hidden = !rent;
+  const th = $("#sTypeHint"); if (th) th.textContent = rent ? "국토교통부 전월세 실거래가" : "국토교통부 매매 실거래가";
+  sRenderSum();
+  sRenderDongChips();
+  sRenderContractBar();
+  sRenderBandBar();
+  sRenderList();
+  sRenderAction();
+}
+
+/* ---------- 관심 아파트 ---------- */
+function saveApts() {
+  try { localStorage.setItem(APT_STORE, JSON.stringify(sstate.apts)); } catch (e) {}
+}
+function sRenderApts() {
+  const wrap = $("#sApts");
+  if (!wrap) return;
+  const cur = String(sstate.kw || "").trim();
+  wrap.innerHTML = `<span class="fs-label">내 관심 아파트</span>` + sstate.apts.map((a, i) => `
+    <span class="save-chip" role="button" tabindex="0" data-apt="${i}" aria-pressed="${a.kw === cur}" title="${esc(a.kw)} — 클릭하면 이 단지만 봅니다">
+      <span class="ck">${esc(a.label)}</span>
+      <button class="x" data-aptdel="${i}" aria-label="${esc(a.label)} 삭제" title="관심 아파트에서 빼기">×</button>
+    </span>`).join("") +
+    `<button class="add-chip" id="sAptAdd" type="button" title="지금 단지명 칸의 검색어를 관심 단지로 저장">+ 현재 검색 저장</button>`;
+}
+
+/* ---------- 설정 저장 ---------- */
+function saveSearch() {
+  const ymEl = $("#sYm"), mEl = $("#sMonths"), fEl = $("#sFromYm"), tEl = $("#sToYm");
+  sstate.ym = ymEl ? ymEl.value : sstate.ym;
+  sstate.months = mEl ? mEl.value : sstate.months;
+  sstate.from = fEl ? inputToYm(fEl.value) : sstate.from;
+  sstate.to = tEl ? inputToYm(tEl.value) : sstate.to;
+  try {
+    localStorage.setItem(SRCH_STORE, JSON.stringify({
+      type: sstate.type, code: sstate.code, ym: sstate.ym, months: sstate.months,
+      from: sstate.from, to: sstate.to, kw: sstate.kw, dong: sstate.dong,
+      withNoDong: sstate.withNoDong, band: sstate.band, sort: sstate.sort, contract: sstate.contract
+    }));
+  } catch (e) {}
+}
+function loadSearch() {
+  try {
+    const a = JSON.parse(localStorage.getItem(APT_STORE) || "null");
+    if (Array.isArray(a)) {
+      const clean = a.filter(x => x && typeof x.kw === "string" && x.kw.trim())
+        .map(x => ({ label: String(x.label || x.kw), kw: String(x.kw) }));
+      if (clean.length) sstate.apts = clean;
+    }
+  } catch (e) {}
+  try {
+    const o = JSON.parse(localStorage.getItem(SRCH_STORE) || "null");
+    if (o && typeof o === "object") {
+      if (STYPE_LABEL[o.type]) sstate.type = o.type;
+      if (/^\d{5}$/.test(String(o.code || ""))) sstate.code = String(o.code);
+      if (/^\d{6}$/.test(String(o.ym || ""))) sstate.ym = String(o.ym);
+      if (["1", "2", "3", "6", "12", "custom"].includes(String(o.months))) sstate.months = String(o.months);
+      if (/^\d{6}$/.test(String(o.from || ""))) sstate.from = String(o.from);
+      if (/^\d{6}$/.test(String(o.to || ""))) sstate.to = String(o.to);
+      if (typeof o.kw === "string") sstate.kw = o.kw;
+      if (typeof o.dong === "string") sstate.dong = o.dong;
+      if (typeof o.withNoDong === "boolean") sstate.withNoDong = o.withNoDong;
+      if (SBANDS.some(b => b.key === o.band)) sstate.band = o.band;
+      if (["date", "price-desc", "price-asc", "dong-floor"].includes(o.sort)) sstate.sort = o.sort;
+      if (["", "신규", "갱신"].includes(o.contract)) sstate.contract = o.contract || "";
+    }
+  } catch (e) {}
+}
+
+/* ---------- 기간 ---------- */
+function sRangeLabel(r) {
+  if (r.months === 1) return `${r.to.slice(0, 4)}년 ${parseInt(r.to.slice(4, 6), 10)}월`;
+  if (r.mode === "custom") return `${ymLabelShort(r.from)}~${ymLabelShort(r.to)}`;
+  if (r.months === 12) return "최근 1년";
+  return `최근 ${r.months}개월`;
+}
+function sSyncCustom() {
+  const on = $("#sMonths").value === "custom";
+  const row = $("#sCustomRow");
+  if (row) row.hidden = !on;
+  if (on) {
+    const raw = String($("#sYm").value || "").trim();
+    const anchor = /^\d{6}$/.test(raw) ? raw : thisMonth();
+    if (!$("#sToYm").value) $("#sToYm").value = ymToInput(anchor);
+    if (!$("#sFromYm").value) $("#sFromYm").value = ymToInput(numYm(ymNum(anchor) - 2));
+  }
+  sUpdateRangeHint();
+}
+function sUpdateRangeHint() {
+  const hint = $("#sRangeHint");
+  if (!hint) return;
+  const r = readApiRange(S_RANGE_IDS);
+  /* 아직 불러온 게 없으면 지금 화면의 기간을 조건 줄에 그대로 보여 준다 */
+  if (!r.error && !sstate.rows.length) {
+    sstate.rangeLabel = sRangeLabel(r);
+    sstate.subtitle = subtitleForRange(r);
+  }
+  if ($("#sMonths").value !== "custom") { hint.hidden = true; hint.innerHTML = ""; return; }
+  hint.hidden = false;
+  if (r.error) { hint.className = "range-hint warn"; hint.textContent = r.error; return; }
+  hint.className = "range-hint" + (r.warn ? " warn" : "");
+  hint.innerHTML = `${r.warn ? esc(r.warn) + "<br>" : ""}${ymLabel(r.from)} ~ ${ymLabel(r.to)} · <b>${r.months}개월</b> · API ${r.months}회 호출`;
+}
+function sFixRange() {
+  let from = inputToYm($("#sFromYm").value);
+  let to = inputToYm($("#sToYm").value);
+  if (!/^\d{6}$/.test(from) || !/^\d{6}$/.test(to)) { sUpdateRangeHint(); return; }
+  let changed = false;
+  if (ymNum(from) > ymNum(to)) { const t = from; from = to; to = t; changed = true; }
+  if (ymNum(to) - ymNum(from) + 1 > MAX_RANGE_MONTHS) {
+    from = numYm(ymNum(to) - (MAX_RANGE_MONTHS - 1));
+    changed = true;
+  }
+  if (changed) {
+    $("#sFromYm").value = ymToInput(from);
+    $("#sToYm").value = ymToInput(to);
+    toast(`기간을 ${ymLabelShort(from)} ~ ${ymLabelShort(to)}(${ymNum(to) - ymNum(from) + 1}개월)로 맞췄습니다`);
+  }
+  sUpdateRangeHint();
+}
+
+/* ---------- 조회 ---------- */
+async function sFetchPage(kind, code, ym, page, key) {
+  const base = kind === "rent" ? RENT_API_BASE : API_BASE;
+  const url = `${base}?serviceKey=${encodeURIComponent(key)}&LAWD_CD=${code}&DEAL_YMD=${ym}&pageNo=${page}&numOfRows=1000`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  return kind === "rent" ? parseRentXml(text) : parseTradeXml(text);
+}
+async function sRun() {
+  const code = String($("#sCode").value || "").trim();
+  if (!/^\d{5}$/.test(code)) {
+    setStatus("#sStatus", "지역코드는 5자리 숫자입니다. 예: 41173 (안양시 동안구)", "err");
+    $("#sCode").focus();
+    return;
+  }
+  const range = readApiRange(S_RANGE_IDS);
+  if (range.error) {
+    setStatus("#sStatus", range.error, "err");
+    if (range.focus) $(range.focus).focus();
+    return;
+  }
+  const key = getApiKey();
+  if (!key) {
+    setStatus("#sStatus", "API 키가 필요합니다. 오른쪽 위 <b>🔑 API 키 설정</b>에서 공공데이터포털 인증키를 저장하면 매매·전월세 모두 조회됩니다.", "err");
+    openKeyModal("search");
+    return;
+  }
+  sstate.code = code;
+  const kind = sIsRent() ? "rent" : "trade";
+  const btn = $("#sRun");
+  btn.disabled = true;
+  const all = [];
+  const failed = [];
+  let canceled = 0, truncated = 0, lastErr = null;
+  const total = range.list.length;
+  for (let i = 0; i < total; i++) {
+    const ym = range.list[i];
+    const tag = total > 1 ? ` (${i + 1}/${total}개월)` : "";
+    btn.textContent = total > 1 ? `불러오는 중 ${i + 1}/${total}` : "불러오는 중";
+    setStatus("#sStatus", `불러오는 중...${tag} · <b>${ymLabel(ym)}</b>${all.length ? ` · 지금까지 ${all.length.toLocaleString("ko-KR")}건` : ""}`, "info");
+    try {
+      let page = 1, got = 0, tot = 0, again = true;
+      while (again && page <= 6) {
+        const p = await sFetchPage(kind, code, ym, page, key);
+        all.push(...p.rows);
+        canceled += p.canceled || 0;
+        got += p.count || p.rows.length;
+        tot = p.total || got;
+        again = (p.count || p.rows.length) > 0 && got < tot;
+        page++;
+      }
+      if (tot > got) truncated += tot - got;
+    } catch (e) {
+      lastErr = e;
+      failed.push(ym);
+      if (e instanceof TypeError) break;   // CORS·네트워크 → 남은 달도 같은 문제
+    }
+  }
+  btn.disabled = false;
+  btn.textContent = "불러오기";
+
+  if (!all.length) {
+    setStatus("#sStatus", failed.length
+      ? `거래를 받지 못했습니다. ${esc((lastErr && lastErr.message) || "")}`
+      : `조건에 맞는 ${STYPE_LABEL[sstate.type]} 거래가 없습니다. 기간을 넓히거나 지역코드를 확인해 주세요.`, "err");
+    return;
+  }
+  all.forEach(r => { r.id = "s" + (sIdSeq++); });
+  sstate.rows = all.slice(0, MAX_DEALS);
+  sstate.sel = [];
+  sstate.kind = kind;
+  const preset = PRESETS.find(p => p.code === code);
+  sstate.place = preset ? preset.name : code;
+  sstate.rangeLabel = sRangeLabel(range);
+  sstate.subtitle = subtitleForRange(range);
+  sstate.cap = 300;
+  if (sstate.dong && !sstate.rows.some(r => r.aptDong === sstate.dong)) sstate.dong = "";
+  saveSearch();
+  sRender();
+  const notes = [];
+  if (canceled) notes.push(`해제 ${canceled}건 제외`);
+  if (truncated) notes.push(`${truncated.toLocaleString("ko-KR")}건은 한도로 못 받음`);
+  if (failed.length) notes.push(`${failed.length}개월 실패(${failed.map(ymLabelShort).join(", ")})`);
+  setStatus("#sStatus",
+    `<b>${all.length.toLocaleString("ko-KR")}건</b>을 불러왔습니다${notes.length ? ` (${notes.join(" · ")})` : ""}.` +
+    (sIsRent() ? " 전월세는 동 정보가 없어 <b>계약구분</b>으로 봅니다." : " 위 <b>동</b> 칩으로 동별 시세를 볼 수 있습니다."),
+    failed.length || truncated ? "err" : "ok");
+}
+
+/* ---------- 선택 → 카드 ---------- */
+function sTogglePick(id, on) {
+  const i = sstate.sel.indexOf(id);
+  if (on) {
+    if (i >= 0) return true;
+    if (sstate.sel.length >= 8) { toast("카드에는 최대 8건까지 넣을 수 있습니다"); return false; }
+    sstate.sel.push(id);
+  } else if (i >= 0) {
+    sstate.sel.splice(i, 1);
+  }
+  return true;
+}
+function sClearPick() {
+  sstate.sel = [];
+  sRenderList();
+  sRenderAction();
+}
+function sMakeCard() {
+  if (sIsRent()) { toast("카드 만들기는 매매 조회에서 쓸 수 있습니다"); return; }
+  const rows = sstate.sel.map(id => sstate.rows.find(r => r.id === id)).filter(Boolean).slice(0, 8);
+  if (!rows.length) { toast("카드로 만들 거래를 먼저 체크하세요"); return; }
+  const deals = rows.map(r => mkDeal({
+    name: r.name, dong: r.dong, aptDong: r.aptDong, jibun: r.jibun, roadNm: r.roadNm, roadBonbun: r.roadBonbun,
+    floor: r.floor, area: r.area, amount: r.amount, date: r.date,
+    badge: r.type === "직거래" ? "직거래" : "없음", selected: true
+  }));
+  state.deals = deals;
+  state.bands = [];
+  if (!state.title || /아파트 실거래가$/.test(state.title)) {
+    const place = (PRESETS.find(p => p.code === sstate.code) || {}).name;
+    if (place) state.title = `${place.replace("시 ", " ")} 아파트 실거래가`;
+  }
+  if (sstate.subtitle) state.subtitle = sstate.subtitle;
+  $("#inTitle").value = state.title;
+  $("#inSubtitle").value = state.subtitle;
+  $("#listFilter").value = "";
+  resetListCap();
+  refresh();
+  switchView("cardmaker");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  toast(`${deals.length}건을 카드에 넣었습니다`);
+}
+
+/* ---------- 바인딩 ---------- */
+function sBuildPresets() {
+  const wrap = $("#sPresets");
+  if (!wrap) return;
+  wrap.innerHTML = PRESETS.map(p => `<button type="button" class="preset" data-code="${p.code}" aria-pressed="${p.code === sstate.code}">${p.name}</button>`).join("");
+}
+function sPulseRun() {
+  const b = $("#sRun");
+  if (!b) return;
+  b.classList.add("pulse");
+  setTimeout(() => b.classList.remove("pulse"), 1700);
+}
+function sBind() {
+  sBuildPresets();
+  $("#sPresets").addEventListener("click", e => {
+    const b = e.target.closest(".preset");
+    if (!b) return;
+    sstate.code = b.dataset.code;
+    $("#sCode").value = sstate.code;
+    $$("#sPresets .preset").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    saveSearch();
+  });
+  $("#sCode").addEventListener("input", () => {
+    const v = String($("#sCode").value || "").trim();
+    sstate.code = v;
+    $$("#sPresets .preset").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.code === v)));
+  });
+  $("#sCode").addEventListener("change", saveSearch);
+  $("#sYm").addEventListener("change", () => { sUpdateRangeHint(); saveSearch(); });
+  $("#sType").addEventListener("click", e => {
+    const b = e.target.closest("button[data-type]");
+    if (!b) return;
+    sstate.type = b.dataset.type;
+    $$("#sType button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    if (sIsRent()) sstate.dong = ""; else sstate.contract = "";
+    sstate.cap = 300;
+    saveSearch();
+    sRender();
+    const need = sIsRent() ? "rent" : "trade";
+    if (sstate.rows.length && sstate.kind && sstate.kind !== need) {
+      setStatus("#sStatus", `<b>${STYPE_LABEL[sstate.type]}</b>는 아직 불러오지 않았습니다. <b>불러오기</b>를 눌러 주세요.`, "info");
+      sPulseRun();
+    }
+  });
+  let kwTimer = 0;
+  $("#sKw").addEventListener("input", () => {
+    sstate.kw = $("#sKw").value;
+    sstate.cap = 300;
+    clearTimeout(kwTimer);
+    kwTimer = setTimeout(() => { sRenderApts(); sRender(); saveSearch(); }, 180);
+  });
+  $("#sApts").addEventListener("click", e => {
+    const del = e.target.closest("[data-aptdel]");
+    if (del) {
+      const i = Number(del.dataset.aptdel);
+      const a = sstate.apts[i];
+      sstate.apts.splice(i, 1);
+      saveApts();
+      sRenderApts();
+      if (a) toast(`‘${a.label}’을 관심 아파트에서 뺐습니다`);
+      return;
+    }
+    const add = e.target.closest("#sAptAdd");
+    if (add) {
+      const kw = String($("#sKw").value || "").trim();
+      if (!kw) { toast("단지명 칸에 먼저 검색어를 입력하세요"); $("#sKw").focus(); return; }
+      if (sstate.apts.some(a => a.kw === kw)) { toast("이미 저장된 관심 단지입니다"); return; }
+      sstate.apts.push({ label: kw, kw });
+      saveApts();
+      sRenderApts();
+      toast(`‘${kw}’을 관심 아파트에 저장했습니다`);
+      return;
+    }
+    const chip = e.target.closest("[data-apt]");
+    if (!chip) return;
+    const a = sstate.apts[Number(chip.dataset.apt)];
+    if (!a) return;
+    $("#sKw").value = a.kw;
+    sstate.kw = a.kw;
+    sstate.cap = 300;
+    sRenderApts();
+    sRender();
+    saveSearch();
+    if (!sstate.rows.length) {
+      setStatus("#sStatus", `관심 단지 <b>‘${esc(a.label)}’</b>을 골랐습니다. <b>불러오기</b>를 누르면 이 조건으로 조회합니다.`, "info");
+      sPulseRun();
+    }
+  });
+  $("#sApts").addEventListener("keydown", e => {
+    const chip = e.target.closest("[data-apt]");
+    if (chip && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); chip.click(); }
+  });
+  $("#sMonths").addEventListener("change", () => { sSyncCustom(); saveSearch(); });
+  $("#sFromYm").addEventListener("change", () => { sFixRange(); saveSearch(); });
+  $("#sToYm").addEventListener("change", () => { sFixRange(); saveSearch(); });
+  $("#sDongBar").addEventListener("click", e => {
+    const b = e.target.closest("[data-dong]");
+    if (!b) return;
+    sstate.dong = b.dataset.dong || "";
+    sstate.cap = 300;
+    sRender();
+    saveSearch();
+  });
+  $("#sWithNoDong").addEventListener("change", e => {
+    sstate.withNoDong = e.target.checked;
+    sRender();
+    saveSearch();
+  });
+  $("#sContractBar").addEventListener("click", e => {
+    const b = e.target.closest("[data-contract]");
+    if (!b) return;
+    sstate.contract = b.dataset.contract || "";
+    sRender();
+    saveSearch();
+  });
+  $("#sBandBar").addEventListener("click", e => {
+    const b = e.target.closest("[data-band]");
+    if (!b) return;
+    sstate.band = b.dataset.band;
+    sstate.cap = 300;
+    sRender();
+    saveSearch();
+  });
+  $("#sSort").addEventListener("change", () => { sstate.sort = $("#sSort").value; sRender(); saveSearch(); });
+  $("#sRun").addEventListener("click", sRun);
+  $("#sList").addEventListener("change", e => {
+    const cb = e.target.closest("input[data-pick]");
+    if (!cb) return;
+    if (!sTogglePick(cb.dataset.pick, cb.checked)) { sRenderList(); sRenderAction(); return; }
+    const li = cb.closest(".srow");
+    if (li) li.classList.toggle("on", cb.checked);
+    sRenderAction();
+  });
+  $("#sList").addEventListener("click", e => {
+    if (e.target.closest("#sMore")) {
+      sstate.cap += LIST_CHUNK;
+      sRenderList();
+    }
+  });
+  $("#sSelNone").addEventListener("click", sClearPick);
+  $("#sMakeCard").addEventListener("click", sMakeCard);
+}
+function sInit() {
+  sstate.ym = thisMonth();
+  loadSearch();
+  $("#sCode").value = sstate.code;
+  $("#sYm").value = sstate.ym || thisMonth();
+  $("#sMonths").value = sstate.months;
+  if (sstate.from) $("#sFromYm").value = ymToInput(sstate.from);
+  if (sstate.to) $("#sToYm").value = ymToInput(sstate.to);
+  $("#sKw").value = sstate.kw;
+  $("#sSort").value = sstate.sort;
+  $("#sWithNoDong").checked = sstate.withNoDong !== false;
+  $$("#sType button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.type === sstate.type)));
+  sBind();
+  sSyncCustom();
+  sRenderApts();
+  sRender();
+}
+
 /* ============================ 도구함: 뷰 전환 ============================ */
 function switchView(name) {
   const target = $("#view-" + name);
   if (!target) return;
   $$(".navbtn").forEach(b => b.setAttribute("aria-selected", String(b.dataset.view === name)));
   $$(".view").forEach(v => v.classList.toggle("on", v === target));
+  if (name === "search") sRender();
 }
 
 /* ============================ API 키 UI ============================ */
@@ -2506,6 +3464,9 @@ function saveKeyFromModal() {
   if (from === "fetch") {
     setStatus("#apiStatus", "API 키를 저장했습니다. 이어서 조회합니다…", "info");
     fetchApi();
+  } else if (from === "search") {
+    setStatus("#sStatus", "API 키를 저장했습니다. 이어서 조회합니다…", "info");
+    sRun();
   }
 }
 function resetKey() {
@@ -2532,6 +3493,7 @@ function init() {
   loadLocal();
   syncCustomRange();
   syncInputsFromState();
+  sInit();
   renderSavedFilters();
   if (!state.deals.length) loadSample();
   else refresh();
@@ -2551,7 +3513,9 @@ window.__app = {
   BANDS, bandOf, bandFiltered, renderBandBar, sortedDeals, selectAllInView, selectTopInView,
   loadSavedFilters, saveCurrentFilter, removeSavedFilter, applyFilterKw, filterByKw, renderSavedFilters,
   layoutHeader: (ctx, W, T, pad, hs, top) => layoutHeader(ctx, W, T, pad, hs, top),
-  switchView, getApiKey, setApiKey, maskKey, renderKeyUI, openKeyModal, closeKeyModal, saveKeyFromModal
+  switchView, getApiKey, setApiKey, maskKey, renderKeyUI, openKeyModal, closeKeyModal, saveKeyFromModal,
+  sstate, sRun, sRender, parseTradeXml, parseRentXml, normDong, sFilteredRows, sMakeCard, sRenderList,
+  SBANDS, sBandOf, sKwTokens, sRangeLabel, sTogglePick
 };
 
 document.addEventListener("DOMContentLoaded", init);
