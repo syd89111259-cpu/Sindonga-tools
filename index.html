@@ -109,6 +109,12 @@
   .row + .row{margin-top:10px}
   .f{display:flex; flex-direction:column; gap:5px; min-width:0}
   .f.grow{flex:1}
+  .mrange{display:flex; gap:6px; align-items:center}
+  .mrange input{flex:1; min-width:0; padding:9px 8px}
+  .mrange .dash{font-size:12px; font-weight:800; color:var(--muted)}
+  .range-hint{font-size:11.5px; line-height:1.5; color:var(--muted); margin-top:7px}
+  .range-hint.warn{color:#B45309}
+  .deal-list li.more-row{display:flex; align-items:center; justify-content:center; padding:10px; background:transparent; border-bottom:0}
   label.lbl{font-size:11.5px; font-weight:700; color:var(--muted); letter-spacing:.1px}
   input[type=text],input[type=number],input[type=date],input[type=month],select,textarea{
     width:100%; border:1px solid var(--line); background:#fff; border-radius:10px;
@@ -342,19 +348,32 @@
             <button class="btn sm ghost" id="btnKeyOpen2" type="button">키 설정</button>
           </div>
           <div class="row">
-            <div class="f" style="width:130px">
+            <div class="f" style="width:150px">
               <label class="lbl">범위</label>
               <select id="apiMonths">
                 <option value="1">해당 월</option>
+                <option value="2">최근 2개월</option>
                 <option value="3" selected>최근 3개월</option>
+                <option value="6">최근 6개월</option>
+                <option value="12">최근 1년(12개월)</option>
+                <option value="custom">기간 직접 지정</option>
               </select>
+            </div>
+            <div class="f grow" id="customRangeRow" hidden>
+              <label class="lbl">시작월 ~ 끝월 (최대 24개월)</label>
+              <div class="mrange">
+                <input type="month" id="apiFromYm" aria-label="시작월">
+                <span class="dash">~</span>
+                <input type="month" id="apiToYm" aria-label="끝월">
+              </div>
             </div>
             <button class="btn primary" id="btnFetch" style="height:38px">불러오기</button>
           </div>
+          <div class="range-hint" id="rangeHint" hidden></div>
           <div class="status" id="apiStatus"></div>
           <div class="note" style="margin-top:9px">
             국토교통부 아파트 매매 실거래가(상세) · 해제된 거래는 자동 제외 · 직거래는 자동 표시<br>
-            <span class="mini">일 10,000회 한도 · API 키는 이 페이지 코드에 넣지 않고 <b>이 브라우저(localStorage)에만</b> 저장합니다. 다른 기기에서는 다시 입력하세요.</span>
+            <span class="mini">일 10,000회 한도(범위 1개월 = 1회 호출, 1년이면 12회) · API 키는 이 페이지 코드에 넣지 않고 <b>이 브라우저(localStorage)에만</b> 저장합니다. 다른 기기에서는 다시 입력하세요.</span>
           </div>
         </div>
 
@@ -1449,14 +1468,18 @@ function renderList() {
   const arr = sortedDeals();
   const selN = state.deals.filter(d => d.selected).length;
   $("#selCount").textContent = `${selN} / 8 선택`;
-  $("#listCount").textContent = `· ${arr.length}건 표시`;
+  const shownN = Math.min(arr.length, listCap);
+  $("#listCount").textContent = arr.length > shownN
+    ? `· ${arr.length.toLocaleString("ko-KR")}건 중 ${shownN.toLocaleString("ko-KR")}건 표시`
+    : `· ${arr.length.toLocaleString("ko-KR")}건 표시`;
   if (!arr.length) {
     ul.innerHTML = state.bands.length
       ? `<li class="empty">선택한 평형대에 해당하는 거래가 없습니다.<br>다른 평형대를 고르거나 ‘전체’를 눌러 주세요.</li>`
       : `<li class="empty">불러온 거래가 없습니다.<br>위에서 API로 불러오거나 붙여넣기·직접 입력으로 추가하세요.</li>`;
     return;
   }
-  ul.innerHTML = arr.map(d => `
+  const shown = arr.slice(0, listCap);
+  ul.innerHTML = shown.map(d => `
     <li class="deal ${d.selected ? "on" : ""}" data-id="${d.id}">
       <label class="chk"><input type="checkbox" ${d.selected ? "checked" : ""} data-act="toggle"></label>
       <div class="d-main">
@@ -1471,7 +1494,9 @@ function renderList() {
         <button class="icobtn" data-act="edit" title="수정">✎</button>
         <button class="icobtn" data-act="del" title="삭제">✕</button>
       </div>
-    </li>`).join("");
+    </li>`).join("") + (arr.length > shown.length
+      ? `<li class="more-row"><button class="btn sm ghost" id="btnMoreRows" type="button">목록 더 보기 (${(arr.length - shown.length).toLocaleString("ko-KR")}건 남음)</button></li>`
+      : "");
 }
 
 /* ---------- 저장된 필터 (프리셋 칩) ---------- */
@@ -1715,7 +1740,7 @@ function saveLocal() {
       theme: state.theme, size: state.size, areaMode: state.areaMode, scale: state.scale,
       showFloor: state.showFloor, showDong: state.showDong, showDate: state.showDate,
       showBadge: state.showBadge, showFooter: state.showFooter,
-      api: { code: $("#apiCode").value, ym: $("#apiYm").value, months: $("#apiMonths").value, kw: $("#apiKw").value },
+      api: { code: $("#apiCode").value, ym: $("#apiYm").value, months: $("#apiMonths").value, kw: $("#apiKw").value, from: $("#apiFromYm").value, to: $("#apiToYm").value },
       deals: state.deals.slice(0, MAX_DEALS).map(d => ({
         name: d.name, dong: d.dong, aptDong: d.aptDong, floor: d.floor,
         area: d.area, amount: d.amount, date: d.date, badge: d.badge, selected: d.selected
@@ -1736,6 +1761,8 @@ function loadLocal() {
       if (api.code) $("#apiCode").value = api.code;
       if (api.ym) $("#apiYm").value = api.ym;
       if (api.months) $("#apiMonths").value = api.months;
+      if (typeof api.from === "string" && api.from) $("#apiFromYm").value = api.from;
+      if (typeof api.to === "string" && api.to) $("#apiToYm").value = api.to;
       if (typeof api.kw === "string") $("#apiKw").value = api.kw;
     }
     if (deals && deals.length) state.deals = deals.map(d => mkDeal(d));
@@ -1873,9 +1900,13 @@ function parseAny(text) {
 }
 
 /* ============================ 데이터 적용 ============================ */
-const MAX_DEALS = 1000;
+const MAX_DEALS = 12000;        // 한 번에 담아 둘 수 있는 최대 건수(1년 전체 조회 ~5,500건 수용)
+const LIST_CHUNK = 300;         // 목록은 300행씩 그린다(휴대폰 렌더 부담 줄이기)
+let listCap = LIST_CHUNK;
+function resetListCap() { listCap = LIST_CHUNK; }
 function applyDeals(list, opt) {
   opt = opt || {};
+  resetListCap();
   // 중복 제거 (3개월 등 여러 응답 합칠 때)
   const seen = new Set();
   const merged = [];
@@ -1903,6 +1934,7 @@ function applyDeals(list, opt) {
 }
 
 /* ============================ API ============================ */
+const MAX_RANGE_MONTHS = 24;   // 한 번에 조회할 수 있는 최대 기간(개월)
 function ymList(ym, months) {
   const y = parseInt(ym.slice(0, 4), 10), m = parseInt(ym.slice(4, 6), 10);
   const out = [];
@@ -1913,15 +1945,115 @@ function ymList(ym, months) {
   }
   return out;
 }
+function ymNum(ym) { return parseInt(ym.slice(0, 4), 10) * 12 + (parseInt(ym.slice(4, 6), 10) - 1); }
+function numYm(n) { const y = Math.floor(n / 12), m = (n % 12) + 1; return `${y}${String(m).padStart(2, "0")}`; }
+function ymLabel(ym) { return `${ym.slice(0, 4)}년 ${parseInt(ym.slice(4, 6), 10)}월`; }
+function ymLabelShort(ym) { return `${ym.slice(0, 4)}.${ym.slice(4, 6)}`; }
+function ymToInput(ym) { return `${ym.slice(0, 4)}-${ym.slice(4, 6)}`; }
+function inputToYm(v) { return String(v || "").replace(/[^0-9]/g, "").slice(0, 6); }
+/* 끝월 → 시작월 순서(최신 먼저)로 월 목록을 만든다 */
+function ymRangeDesc(fromYm, toYm) {
+  const a = ymNum(fromYm), b = ymNum(toYm);
+  const out = [];
+  for (let n = Math.max(a, b); n >= Math.min(a, b); n--) out.push(numYm(n));
+  return out;
+}
+
+/* 화면의 기간 설정을 읽어 실제 조회 월 목록을 만든다 */
+function readApiRange() {
+  const mode = $("#apiMonths").value;
+  if (mode === "custom") {
+    let from = inputToYm($("#apiFromYm").value);
+    let to = inputToYm($("#apiToYm").value);
+    const okFrom = /^\d{6}$/.test(from), okTo = /^\d{6}$/.test(to);
+    if (!okFrom && !okTo) return { error: "시작월과 끝월을 먼저 골라 주세요." };
+    if (!okFrom) from = to;
+    if (!okTo) to = from;
+    let warn = "";
+    if (ymNum(from) > ymNum(to)) {
+      const t = from; from = to; to = t;
+      warn = "시작월이 끝월보다 뒤라 두 달을 바꿔 조회합니다.";
+    }
+    if (ymNum(to) - ymNum(from) + 1 > MAX_RANGE_MONTHS) {
+      from = numYm(ymNum(to) - (MAX_RANGE_MONTHS - 1));
+      warn = `기간은 최대 ${MAX_RANGE_MONTHS}개월까지 불러옵니다. 끝월 기준 ${MAX_RANGE_MONTHS}개월로 맞췄습니다.`;
+    }
+    const list = ymRangeDesc(from, to);
+    return { mode: "custom", list, from, to, months: list.length, warn };
+  }
+  const n = parseInt(mode, 10) || 1;
+  const anchor = ($("#apiYm").value || "").trim();
+  if (!/^\d{6}$/.test(anchor)) return { error: "계약년월은 6자리로 입력해 주세요. 예: 202611", focus: "#apiYm" };
+  const list = ymList(anchor, n);
+  return { mode: "recent", list, from: list[list.length - 1], to: list[0], months: list.length, warn: "" };
+}
+
+function updateRangeHint() {
+  const hint = $("#rangeHint");
+  if (!hint) return;
+  if ($("#apiMonths").value !== "custom") { hint.hidden = true; hint.innerHTML = ""; return; }
+  hint.hidden = false;
+  const r = readApiRange();
+  if (r.error) { hint.className = "range-hint warn"; hint.textContent = r.error; return; }
+  const info = `${ymLabel(r.from)} ~ ${ymLabel(r.to)} · <b>${r.months}개월</b> · API ${r.months}회 호출<br>위 <b>계약년월</b> 대신 이 범위로 조회합니다.`;
+  hint.className = "range-hint" + (r.warn ? " warn" : "");
+  hint.innerHTML = r.warn ? `${esc(r.warn)}<br>${info}` : info;
+}
+
+/* 기간 직접 지정 칸을 보이거나 숨기고, 처음 열 때 최근 3개월로 채운다 */
+function syncCustomRange() {
+  const on = $("#apiMonths").value === "custom";
+  const row = $("#customRangeRow");
+  if (row) row.hidden = !on;
+  if (on) {
+    const raw = ($("#apiYm").value || "").trim();
+    const anchor = /^\d{6}$/.test(raw) ? raw : thisMonth();
+    if (!$("#apiToYm").value) $("#apiToYm").value = ymToInput(anchor);
+    if (!$("#apiFromYm").value) $("#apiFromYm").value = ymToInput(numYm(ymNum(anchor) - 2));
+  }
+  updateRangeHint();
+}
+
+/* 입력한 두 달이 뒤집혔거나 너무 길면 그 자리에서 바로잡는다 */
+function fixCustomRange() {
+  let from = inputToYm($("#apiFromYm").value);
+  let to = inputToYm($("#apiToYm").value);
+  if (!/^\d{6}$/.test(from) || !/^\d{6}$/.test(to)) { updateRangeHint(); return; }
+  let changed = false;
+  if (ymNum(from) > ymNum(to)) { const t = from; from = to; to = t; changed = true; }
+  if (ymNum(to) - ymNum(from) + 1 > MAX_RANGE_MONTHS) {
+    from = numYm(ymNum(to) - (MAX_RANGE_MONTHS - 1));
+    changed = true;
+  }
+  if (changed) {
+    $("#apiFromYm").value = ymToInput(from);
+    $("#apiToYm").value = ymToInput(to);
+    toast(`기간을 ${ymLabelShort(from)} ~ ${ymLabelShort(to)}(${ymNum(to) - ymNum(from) + 1}개월)로 맞췄습니다`);
+  }
+  updateRangeHint();
+}
+
+function subtitleForRange(r) {
+  if (r.months === 1) {
+    return `${r.to.slice(0, 4)}년 ${parseInt(r.to.slice(4, 6), 10)}월 주요 거래`;
+  }
+  if (r.mode === "custom") return `${ymLabelShort(r.from)}~${ymLabelShort(r.to)} 주요 거래`;
+  if (r.months === 12) return "최근 1년 주요 거래";
+  return `최근 ${r.months}개월 주요 거래`;
+}
 
 async function fetchApi() {
   const code = ($("#apiCode").value || "").trim();
-  const ym = ($("#apiYm").value || "").trim();
   const key = getApiKey();
   const kw = ($("#apiKw").value || "").trim();
-  const months = parseInt($("#apiMonths").value, 10) || 1;
   if (!/^\d{5}$/.test(code)) { setStatus("#apiStatus", "지역코드는 5자리 숫자입니다. 예: 41173 (안양시 동안구)", "err"); return; }
-  if (!/^\d{6}$/.test(ym)) { setStatus("#apiStatus", "계약년월은 6자리입니다. 예: 202611", "err"); return; }
+  const range = readApiRange();
+  if (range.error) {
+    setStatus("#apiStatus", range.error, "err");
+    if (range.focus) $(range.focus).focus();
+    else $("#apiFromYm").focus();
+    return;
+  }
   if (!key) {
     setStatus("#apiStatus", "API 키를 먼저 입력해 주세요. 아래 <b>키 설정</b>에서 공공데이터포털 인증키를 저장하면 바로 조회됩니다.", "err");
     openKeyModal("fetch");
@@ -1929,13 +2061,19 @@ async function fetchApi() {
   }
 
   const btn = $("#btnFetch");
+  const place = PRESETS.find(p => p.code === code)?.name || code;
   btn.disabled = true; btn.textContent = "불러오는 중…";
-  setStatus("#apiStatus", `${PRESETS.find(p => p.code === code)?.name || code} · ${ymList(ym, months).join(", ")} 조회 중…`, "info");
 
   const all = [];
   let canceled = 0, lastErr = null;
-  for (const m of ymList(ym, months)) {
+  const failed = [], skipped = [];
+  for (let i = 0; i < range.list.length; i++) {
+    const m = range.list[i];
+    const step = range.list.length > 1 ? ` · (${i + 1}/${range.list.length}개월)` : "";
+    btn.textContent = range.list.length > 1 ? `불러오는 중… ${i + 1}/${range.list.length}` : "불러오는 중…";
+    setStatus("#apiStatus", `${place} · <b>${ymLabel(m)}</b> 불러오는 중…${step}${all.length ? ` · 지금까지 ${all.length}건` : ""}`, "info");
     const url = `${API_BASE}?serviceKey=${encodeURIComponent(key)}&LAWD_CD=${code}&DEAL_YMD=${m}&pageNo=1&numOfRows=1000`;
+    let netFail = false;
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1945,8 +2083,10 @@ async function fetchApi() {
       all.push(...parsed);
     } catch (e) {
       lastErr = e;
-      if (e instanceof TypeError) break; // CORS/네트워크
+      failed.push(m);
+      if (e instanceof TypeError) { netFail = true; skipped.push(...range.list.slice(i + 1)); } // CORS/네트워크 → 나머지는 건너뜀
     }
+    if (netFail) break;
   }
   btn.disabled = false; btn.textContent = "불러오기";
 
@@ -1974,17 +2114,18 @@ async function fetchApi() {
     state.title = `${preset.name.replace("시 ", " ")} 아파트 실거래가`;
     $("#inTitle").value = state.title;
   }
-  const y = ym.slice(0, 4), mo = parseInt(ym.slice(4, 6), 10);
-  state.subtitle = months > 1 ? `최근 ${months}개월 주요 거래` : `${y}년 ${mo}월 주요 거래`;
+  state.subtitle = subtitleForRange(range);
   $("#inSubtitle").value = state.subtitle;
 
   const res = applyDeals(list, { autoSelect: true });
   const notes = [];
   if (canceled) notes.push(`해제 거래 ${canceled}건 제외`);
   if (res.dup) notes.push(`중복 ${res.dup}건 제외`);
-  if (list.length > MAX_DEALS) notes.push(`목록에는 ${MAX_DEALS}건까지 표시`);
-  setStatus("#apiStatus",
-    `<b>${res.applied}건</b>을 불러왔습니다${notes.length ? ` (${notes.join(" · ")})` : ""}. 최근 계약 ${state.deals.filter(d => d.selected).length}건이 기본 선택되어 있습니다.`, "ok");
+  const parts = [];
+  parts.push(`<b>${res.applied}건</b>을 불러왔습니다${notes.length ? ` (${notes.join(" · ")})` : ""}. 최근 계약 ${state.deals.filter(d => d.selected).length}건이 기본 선택되어 있습니다.`);
+  if (list.length > MAX_DEALS) parts.push(`<br><b>${list.length.toLocaleString("ko-KR")}건 중 최근 ${MAX_DEALS.toLocaleString("ko-KR")}건만 담았습니다.</b> 기간을 줄이거나 단지명 필터로 좁혀 주세요.`);
+  if (failed.length) parts.push(`<br>${failed.length}개월(${failed.map(ymLabelShort).join(", ")})은 응답을 받지 못했${skipped.length ? `고, 네트워크 문제로 남은 ${skipped.length}개월은 건너뛰었` : ""}습니다.`);
+  setStatus("#apiStatus", parts.join(""), failed.length || list.length > MAX_DEALS ? "err" : "ok");
 }
 
 /* ============================ PNG / 복사 ============================ */
@@ -2097,7 +2238,8 @@ function bind() {
   $("#apiKw").addEventListener("input", () => { renderSavedFilters(); saveLocal(); });
   // 조회 조건(지역·년월·범위)이 바뀌면 예전에 불러온 거래를 필터 재적용에 쓰지 않는다
   ["#apiCode", "#apiYm"].forEach(sel => $(sel).addEventListener("input", () => { state.apiPool = []; }));
-  $("#apiMonths").addEventListener("change", () => { state.apiPool = []; });
+  $("#apiMonths").addEventListener("change", () => { state.apiPool = []; syncCustomRange(); saveLocal(); });
+  ["#apiFromYm", "#apiToYm"].forEach(sel => $(sel).addEventListener("change", () => { state.apiPool = []; fixCustomRange(); saveLocal(); }));
 
   // 저장된 필터 칩 (클릭 적용 · × 삭제 · + 저장)
   $("#savedFilters").addEventListener("click", e => {
@@ -2125,6 +2267,7 @@ function bind() {
     const key = b.dataset.band;
     if (key === "all") state.bands = [];
     else state.bands = state.bands.includes(key) ? state.bands.filter(k => k !== key) : state.bands.concat(key);
+    resetListCap();
     refresh();
     // 평형대를 고르면 그 안에서 최근 계약 6건을 자동 선택 (카드가 바로 따라오게)
     if (state.bands.length) {
@@ -2187,6 +2330,7 @@ function bind() {
 
   // 목록 이벤트 (위임)
   $("#dealList").addEventListener("click", e => {
+    if (e.target.closest("#btnMoreRows")) { listCap += LIST_CHUNK; renderList(); return; }
     const li = e.target.closest(".deal"); if (!li) return;
     const id = li.dataset.id;
     const d = state.deals.find(x => x.id === id); if (!d) return;
@@ -2239,7 +2383,7 @@ function bind() {
   });
   $("#btnSelMax").addEventListener("click", selectMaxByPyeongInView);
   $("#sortBy").addEventListener("change", renderList);
-  $("#listFilter").addEventListener("input", renderList);
+  $("#listFilter").addEventListener("input", () => { resetListCap(); renderList(); });
   $("#btnSample").addEventListener("click", loadSample);
 
   // 디자인
@@ -2284,6 +2428,7 @@ function loadSample() {
   const pick = ["목련 6단지", "목련 7단지", "평촌센텀퍼스트", "평촌더샵아이파크", "삼성래미안", "평촌트리지아"];
   deals.forEach(d => { if (pick.includes(d.name)) d.selected = true; });
   state.deals = deals;
+  resetListCap();
   state.title = "안양 동안구 아파트 실거래가";
   state.subtitle = "2026년 11월 주요 거래";
   $("#inTitle").value = state.title;
@@ -2382,6 +2527,7 @@ function init() {
   renderKeyUI();
   $("#apiYm").value = thisMonth();
   loadLocal();
+  syncCustomRange();
   syncInputsFromState();
   renderSavedFilters();
   if (!state.deals.length) loadSample();
@@ -2397,6 +2543,7 @@ window.__app = {
   state, renderCard, renderList, refresh, loadSample, buildSNS, renderSNS,
   parseXMLDeals, parseCsvDeals, parseAny, applyDeals, fetchApi, wonText, pyeongText,
   parseAmount, parseDate, downloadPng, switched: switchTab, THEMES,
+  ymList, ymRangeDesc, readApiRange, subtitleForRange, syncCustomRange, fixCustomRange, resetListCap,
   calcSupplyPyeong, supplyInfo, supplyPyeongText, areaLabel, mokryeonDanjiNo, MOKRYEON_SUPPLY,
   BANDS, bandOf, bandFiltered, renderBandBar, sortedDeals, selectAllInView, selectTopInView,
   loadSavedFilters, saveCurrentFilter, removeSavedFilter, applyFilterKw, filterByKw, renderSavedFilters,
