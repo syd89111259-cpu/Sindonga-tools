@@ -4147,6 +4147,7 @@ function aSetMode(mode) {
   if (lp) lp.hidden = asil;
   if (asil) aOnShow();
   else sRender();
+  if ($$(".view.on").some(v => v.id === "view-search")) syncRouteFromUI();
 }
 function aOnShow() {
   if (astate.data) { aRender(); return; }
@@ -4282,6 +4283,55 @@ function switchView(name) {
     if (api && !api.hidden) sRender();
     else aOnShow();
   }
+  syncRouteFromUI();
+}
+
+/* ============================ 전용 주소 라우팅 (?tab= · #) ============================
+   ?tab=card | asil | molit  (또는 #card | #asil | #molit) 로 바로 진입합니다.
+   탭·조회 방식을 직접 바꾸면 주소를 replaceState 로 맞춰 북마크·공유가 되게 합니다. */
+const ROUTE_TABS = ["card", "asil", "molit"];
+let routeReady = false;   // 첫 진입(주소 해석) 중에는 주소를 건드리지 않습니다
+
+function readRouteTab() {
+  let q = "";
+  try { q = (new URLSearchParams(location.search).get("tab") || "").trim().toLowerCase(); } catch (e) {}
+  if (ROUTE_TABS.includes(q)) return q;
+  let h = "";
+  try { h = String(location.hash || "").replace(/^#!?\/?/, "").split(/[?&]/)[0].trim().toLowerCase(); } catch (e) {}
+  if (ROUTE_TABS.includes(h)) return h;
+  return "";
+}
+
+/* 지금 화면이 가리키는 전용 주소 이름 */
+function currentRouteTab() {
+  const v = document.querySelector(".view.on");
+  if (!v) return "";
+  if (v.id === "view-cardmaker") return "card";
+  if (v.id !== "view-search") return "";   // 준비 중 화면은 주소를 바꾸지 않습니다
+  const b = document.querySelector('#sMode button[aria-pressed="true"]');
+  return (b && b.dataset.mode === "api") ? "molit" : "asil";
+}
+
+function syncRouteUrl(tab) {
+  if (!routeReady || !tab || !ROUTE_TABS.includes(tab)) return;
+  try {
+    const u = new URL(location.href);
+    if (u.searchParams.get("tab") === tab && !u.hash) return;   // 이미 같은 주소면 그대로
+    u.searchParams.set("tab", tab);   // 다른 쿼리(예: ?v=캐시방지)는 그대로 둡니다
+    u.hash = "";
+    history.replaceState(null, "", u.pathname + u.search);
+  } catch (e) {}
+}
+
+function syncRouteFromUI() { syncRouteUrl(currentRouteTab()); }
+
+function applyRoute(tab) {
+  if (tab === "asil" || tab === "molit") {
+    aSetMode(tab === "asil" ? "asil" : "api");
+    switchView("search");
+  } else {
+    switchView("cardmaker");
+  }
 }
 
 /* ============================ API 키 UI ============================ */
@@ -4377,6 +4427,11 @@ function init() {
   renderSavedFilters();
   if (!state.deals.length) loadSample();
   else refresh();
+  // 전용 주소(?tab=card|asil|molit · #card|#asil|#molit)로 바로 진입
+  // 첫 진입 때는 주소를 고쳐 쓰지 않고(이미 있는 쿼리 유지), 그대로 그 화면만 엽니다.
+  const routeTab = readRouteTab();
+  if (routeTab) applyRoute(routeTab);
+  routeReady = true;
   // 폰트 로딩 후 한 번 더 (한글 폰트 메트릭 차이 보정)
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => renderCard()).catch(() => {});
