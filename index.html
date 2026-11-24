@@ -413,17 +413,18 @@
     .atable-head{display:none}
     .arow{display:flex; flex-wrap:wrap; gap:3px 8px; padding:10px 11px; min-width:0}
     .arow .a-chk{order:1}
-    .arow .a-cmplx{order:2; flex:1 1 100%; font-size:11px}
+    .arow .a-cmplx{order:2; flex:1 1 auto; min-width:0; font-size:11px}
     .arow .a-dong{order:3; font-size:13px}
     .arow .a-floor{order:4}
     .arow .a-py{order:5}
     .arow .a-m2{order:6}
     .arow .a-deal{order:7; margin-left:auto}
-    .arow .a-date{order:8}
-    .arow .a-gb{order:8}
-    .arow .a-term{order:8}
     .atable-wrap.all .atable-head,.atable-wrap.all .arow{min-width:0}
-    .arow .a-price{order:9; flex:1 1 100%; font-size:14.5px; margin-top:1px}
+    .arow .a-price{order:8; flex:1 1 100%; font-size:14.5px; margin-top:1px}
+    .arow .a-date{order:9}
+    .arow .a-gb{order:9}
+    .arow .a-term{order:9}
+    .arow .a-gb.n, .arow .a-term.n{display:none}
     .a-selname{font-size:15.5px}
     .af{flex:1 1 100%; flex-wrap:wrap; row-gap:6px}
     .af > .lbl{flex:0 0 auto}
@@ -3969,7 +3970,7 @@ function aRowHtml(r) {
     <span class="a-m2">${esc(r.m2 || "-")}</span>
     <span class="a-date">${esc(r.contract_date || dateShort(r.__date))}${ago}</span>
     ${gb}
-    <span class="a-term">${esc(term)}</span>
+    <span class="a-term${term === "-" ? " n" : ""}">${esc(term)}</span>
     <span class="a-deal">${esc(r.deal)}</span>
     <span class="a-price">${esc(r.price)}</span>
   </li>`;
