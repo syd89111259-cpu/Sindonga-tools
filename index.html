@@ -318,8 +318,8 @@
   .c-mob{display:none}
   .more-row{display:flex; justify-content:center; padding:10px; border-bottom:0; background:#FBFDFF}
   /* ---------- 🏢 아실 14개 단지 (동별) ---------- */
-  .srcmode{width:100%; margin-bottom:0}
-  .srcmode button{flex:1 1 auto; padding:10px 14px; font-size:13px}
+  .srcmode{width:100%; margin-bottom:0; background:#E7ECF4}
+  .srcmode button{flex:1 1 0; min-width:0; padding:11px 14px; font-size:13px}
   /* 잠금 해제 */
   .asil-gate{max-width:600px; margin:0 auto}
   .agate-h{display:flex; gap:12px; align-items:flex-start}
@@ -3644,7 +3644,8 @@ function aNum(v) { const m = /(\d+)/.exec(String(v == null ? "" : v)); return m 
 function aAreaNum(m2) { const v = parseFloat(String(m2 == null ? "" : m2).replace(/[^\d.]/g, "")); return isFinite(v) ? v : 0; }
 function aPriceMan(price) { return parseAmount(String(price == null ? "" : price).split("/")[0]); }
 function aDongLabel(dong) { return !dong || dong === "-" ? "동 미상" : dong; }
-function aPyLabel(py) { return !py || py === "-" ? "평 미상" : py; }
+function aPyLabel(py) { const s = String(py == null ? "" : py).trim(); return (!s || /^-/.test(s)) ? "평 미상" : s; }
+function aPyRank(py) { const s = String(py == null ? "" : py).trim(); return (!s || /^-/.test(s)) ? 1e6 : aPyNum(s); }
 function aPeriodLabel() {
   const f = astate.from ? astate.from.replace("-", ".") : "";
   const t = astate.to ? astate.to.replace("-", ".") : "";
@@ -3805,8 +3806,7 @@ function aRenderFilters() {
   const areas = new Map();
   base.forEach(r => { const k = String(r.py || "-"); areas.set(k, (areas.get(k) || 0) + 1); });
   if (astate.area !== "all" && !areas.has(astate.area)) astate.area = "all";
-  const aKeys = Array.from(areas.keys()).sort((x, y) =>
-    ((x === "-" || !x) ? 1e6 : aPyNum(x)) - ((y === "-" || !y) ? 1e6 : aPyNum(y)));
+  const aKeys = Array.from(areas.keys()).sort((x, y) => aPyRank(x) - aPyRank(y) || x.localeCompare(y, "ko"));
   selA.innerHTML = `<option value="all">전체 면적 (${base.length.toLocaleString("ko-KR")})</option>` +
     aKeys.map(k => `<option value="${esc(k)}">${esc(aPyLabel(k))} (${areas.get(k)})</option>`).join("");
   selA.value = astate.area;
@@ -3871,7 +3871,7 @@ function aRowHtml(r) {
     <span class="a-chk">${chk}</span>${astate.cmplx ? "" : `<span class="a-cmplx" title="${esc(r.__cmplx)}">${esc(r.__cmplx)}</span>`}
     <span class="a-dong${!r.dong || r.dong === "-" ? " no" : ""}" title="${esc(aDongLabel(r.dong))}">${esc(aDongLabel(r.dong))}</span>
     <span class="a-floor">${esc(floor)}</span>
-    <span class="a-py">${esc(r.py && r.py !== "-" ? r.py : "-")}</span>
+    <span class="a-py">${esc(r.py && !/^-/.test(r.py) ? r.py : "-")}</span>
     <span class="a-m2">${esc(r.m2 || "-")}</span>
     <span class="a-date">${esc(r.contract_date || dateShort(r.__date))}${ago}</span>
     ${gb}
