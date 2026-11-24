@@ -2813,7 +2813,7 @@ function sCondText() {
   if (sstate.kw) bits.push(`‘${sstate.kw}’`);
   if (!sIsRent()) {
     if (sstate.dong) bits.push(sstate.dong);
-    if (sstate.dong && !sstate.withNoDong) bits.push("동 미공개 제외");
+    if (sstate.dong) bits.push(sstate.withNoDong ? "동 미공개 포함" : "동 미공개 제외");
   } else if (sstate.contract) bits.push(sstate.contract);
   if (sstate.band !== "all") {
     const b = SBANDS.find(x => x.key === sstate.band);
@@ -2847,9 +2847,11 @@ function sRenderSum() {
     return;
   }
   const dongN = new Set(arr.map(r => r.aptDong).filter(Boolean)).size;
+  const noDongN = arr.filter(r => !r.aptDong).length;
   const won = arr.filter(r => r.type === "직거래").length;
   box.innerHTML =
-    sumCell("건수", `${arr.length.toLocaleString("ko-KR")}건`, `${dongN ? dongN + "개 동 · " : ""}직거래 ${won}건`, true) +
+    sumCell("건수", `${arr.length.toLocaleString("ko-KR")}건`,
+      [dongN ? `${dongN}개 동` : "", noDongN ? `동 미공개 ${noDongN.toLocaleString("ko-KR")}건` : "", `직거래 ${won}건`].filter(Boolean).join(" · "), true) +
     sumCell("최근 거래가", wonText(latest.amount), `${dateLong(latest.date)} · ${latest.name}`, true) +
     sumCell("최고가", wonText(max.amount), where(max)) +
     sumCell("최저가", wonText(min.amount), where(min));
