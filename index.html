@@ -338,11 +338,12 @@
   }
   .achip:hover{border-color:#93B4FF; background:#F6FAFF}
   .achip[aria-pressed="true"]{border-color:#2563EB; background:#EFF6FF; color:#1D4ED8; font-weight:800; box-shadow:inset 0 0 0 1px #2563EB}
-  .achip.edit{margin-left:auto; color:#1D4ED8; border-color:#BFD4FF; background:#F5F9FF}
+  .achip.edit{color:#1D4ED8; border-color:#BFD4FF; background:#F5F9FF}
   .achip.edit:hover{background:#EAF2FF; border-color:#93B4FF}
   .achip.edit[aria-expanded="true"]{border-color:#2563EB; background:#EFF6FF; box-shadow:inset 0 0 0 1px #2563EB}
-  .achip.reset{margin-left:6px; color:#B42318; border-color:#FECDCA; background:#FFF8F8}
+  .achip.reset{color:#B42318; border-color:#FECDCA; background:#FFF8F8}
   .achip.reset:hover{background:#FEF2F2; border-color:#FCA5A5}
+  .acmplx .a-tail{margin-left:auto; display:flex; gap:5px; flex:none; flex-wrap:nowrap}
   /* 단지 순서 편집 패널 */
   .aorder{margin-top:10px; border:1px solid #CBD5E1; border-radius:10px; background:#F8FAFF; padding:10px 11px}
   .aorder-h{display:flex; flex-wrap:wrap; gap:3px 8px; align-items:baseline; margin-bottom:8px}
@@ -4033,8 +4034,10 @@ function aRenderCmplx() {
   box.innerHTML = astate.order.map(n =>
     `<button type="button" class="achip" data-cmplx="${esc(n)}" aria-pressed="${astate.cmplx === n}">${esc(n)}</button>`).join("") +
     `<button type="button" class="achip" data-cmplx="" aria-pressed="${!astate.cmplx}">전체 단지</button>` +
+    `<span class="a-tail">` +
     `<button type="button" class="achip edit" id="aOrderEdit" aria-expanded="${editing}" title="단지 버튼 순서를 바꾸고 저장합니다">🔀 순서 편집</button>` +
-    `<button type="button" class="achip reset" id="aReset" title="단지·기간·면적·동·정렬을 처음 상태로 (저장한 단지 순서는 그대로)">초기화</button>`;
+    `<button type="button" class="achip reset" id="aReset" title="단지·기간·면적·동·정렬을 처음 상태로 (저장한 단지 순서는 그대로)">초기화</button>` +
+    `</span>`;
 }
 function aRenderFilters() {
   const selA = $("#aArea"), selD = $("#aDong");
