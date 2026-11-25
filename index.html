@@ -2659,6 +2659,8 @@ async function fetchApi() {
   const list = filterByKw(all, kw);
   if (!list.length) {
     setStatus("#apiStatus", `‘${esc(kw)}’가 들어간 단지를 찾지 못했습니다. 전체 ${all.length}건 중에서 검색했습니다.`, "err");
+    // 필터가 맞지 않아 전체를 보여 주는 경우 → 제목도 필터 없는 지역 제목으로 맞춘다
+    setAutoTitle(autoCardTitle(placeLabel(code), ""));
     applyDeals(all, { autoSelect: false });
     return;
   }
