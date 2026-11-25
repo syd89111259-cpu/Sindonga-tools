@@ -1247,8 +1247,67 @@ function mkDeal(o) {
   };
 }
 
+/* ---------- 카드 상단 제목 자동 제안 (지역 + 검색 필터) ---------- */
+const DEFAULT_TITLE = "안양 동안구 아파트 실거래가";
+let autoTitle = DEFAULT_TITLE;   // 마지막으로 자동 제안한 제목
+let autoTitleOn = true;          // 지금 제목이 아직 자동 제안 값인지 (직접 고치면 false)
+
+/* 지역코드 → 카드에 쓰는 짧은 지역명 ("안양시 동안구" → "안양 동안구", "과천시" → "과천시") */
+function placeLabel(code) {
+  const p = PRESETS.find(x => String(x.code) === String(code));
+  return p ? p.name.replace("시 ", " ") : "";
+}
+/* 단지명 필터 → 제목용 문구 (쉼표·슬래시·중복 정리, 여러 개는 · 로 이어 붙임) */
+function filterLabel(raw) {
+  const out = [];
+  String(raw == null ? "" : raw).split(/[,/|]+/).forEach(part => {
+    const t = part.replace(/\s+/g, " ").trim();
+    if (t && !out.includes(t)) out.push(t);
+  });
+  return out.join(" · ");
+}
+/* 예) ("안양 동안구", "목련8단지") → "안양 동안구 목련8단지 실거래가"
+      ("과천시", "")          → "과천시 아파트 실거래가" */
+function autoCardTitle(place, kw) {
+  const p = String(place || "").trim();
+  const f = filterLabel(kw);
+  const head = [p, f].filter(Boolean).join(" ");
+  if (!head) return "아파트 실거래가";
+  return f ? `${head} 실거래가` : `${head} 아파트 실거래가`;
+}
+/* 자동 제목만 갱신 — 사용자가 직접 고친 제목은 덮어쓰지 않는다. (제목을 비우면 다시 자동) */
+function setAutoTitle(next) {
+  next = String(next || "").replace(/\s+/g, " ").trim();
+  if (!next) return false;
+  const cur = (state.title || "").trim();
+  if (!autoTitleOn || (cur && cur !== autoTitle)) return false;
+  if (cur === next) { autoTitle = next; autoTitleOn = true; return false; }
+  state.title = next;
+  autoTitle = next;
+  autoTitleOn = true;
+  const inp = $("#inTitle");
+  if (inp) inp.value = next;
+  return true;
+}
+/* 제목 앞머리의 지역 ("안양 동안구 목련8단지 실거래가" → "안양 동안구") */
+function titlePlace(title) {
+  const t = String(title || "").replace(/\s+/g, " ").trim();
+  if (!t) return "";
+  const hit = PRESETS.map(p => p.name.replace("시 ", " ")).find(n => t === n || t.startsWith(n + " "));
+  if (hit) return hit;
+  const m = t.match(/^[가-힣]+[시군구](?:\s+[가-힣]+구)?/);
+  return m ? m[0] : "";
+}
+/* 지역명 → SNS 해시태그용 시 이름 ("안양 동안구" → "안양", "과천시" → "과천") */
+function titleCity(place) {
+  const s = String(place || "").trim();
+  if (!s) return "안양";
+  const first = s.split(" ")[0];
+  return first.replace(/[시군구]$/, "") || first;
+}
+
 const state = {
-  title: "안양 동안구 아파트 실거래가",
+  title: DEFAULT_TITLE,
   subtitle: "2026년 11월 주요 거래",
   kicker: "국토교통부 실거래가 공개",
   footer: "신동아공인중개사사무소 · 031-388-7788",
@@ -2176,7 +2235,8 @@ function buildSNS(kind) {
 
   // insta / thread
   const dongs = [...new Set(sel.map(d => d.dong).filter(Boolean))];
-  const tags = ["#안양부동산", "#실거래가", "#아파트시세"];
+  const sPlace = titlePlace(title);               // 제목 앞머리의 지역 (예: "안양 동안구", "과천시")
+  const tags = [`#${titleCity(sPlace)}부동산`, "#실거래가", "#아파트시세"];
   const t = title.replace(/\s/g, "");
   if (/동안구/.test(title)) tags.push("#동안구", "#평촌");
   if (/만안구/.test(title)) tags.push("#만안구");
@@ -2189,7 +2249,7 @@ function buildSNS(kind) {
     "",
     ...lines,
     "",
-    `📍 ${dongs.join(" · ") || "안양시"}`,
+    `📍 ${dongs.join(" · ") || sPlace || "안양시"}`,
     `📞 ${foot}`,
     "",
     [...new Set(tags)].slice(0, 12).join(" ")
@@ -2207,6 +2267,7 @@ function saveLocal() {
   try {
     localStorage.setItem("recm.v1", JSON.stringify({
       title: state.title, subtitle: state.subtitle, kicker: state.kicker, footer: state.footer,
+      autoTitle, autoTitleOn,
       theme: state.theme, size: state.size, areaMode: state.areaMode, scale: state.scale,
       showFloor: state.showFloor, showDong: state.showDong, showDate: state.showDate,
       showBadge: state.showBadge, showFooter: state.showFooter,
@@ -2226,7 +2287,12 @@ function loadLocal() {
     const deals = Array.isArray(o.deals) ? o.deals : null;
     const api = o.api || null;
     delete o.deals; delete o.api;
+    const savedAuto = typeof o.autoTitle === "string" ? o.autoTitle : null;
+    const savedAutoOn = o.autoTitleOn !== false;
+    delete o.autoTitle; delete o.autoTitleOn;
     Object.assign(state, o);
+    autoTitle = savedAuto != null ? savedAuto : (state.title || DEFAULT_TITLE);
+    autoTitleOn = savedAutoOn && !!state.title;
     if (api) {
       if (api.code) $("#apiCode").value = api.code;
       if (api.ym) $("#apiYm").value = api.ym;
@@ -2596,12 +2662,8 @@ async function fetchApi() {
     applyDeals(all, { autoSelect: false });
     return;
   }
-  // 제목/부제 자동 제안
-  const preset = PRESETS.find(p => p.code === code);
-  if (preset && (!state.title || /아파트 실거래가$/.test(state.title))) {
-    state.title = `${preset.name.replace("시 ", " ")} 아파트 실거래가`;
-    $("#inTitle").value = state.title;
-  }
+  // 제목/부제 자동 제안 — 지역 + 단지명 필터까지 반영 (직접 고친 제목은 유지)
+  setAutoTitle(autoCardTitle(placeLabel(code), kw));
   state.subtitle = subtitleForRange(range);
   $("#inSubtitle").value = state.subtitle;
 
@@ -2889,7 +2951,10 @@ function bind() {
     renderCard(); saveLocal();
   });
   const bindText = (sel, key) => $(sel).addEventListener("input", e => {
-    state[key] = e.target.value; renderCard(); renderSNS(); saveLocal();
+    state[key] = e.target.value;
+    // 제목을 직접 고치면 자동 제안을 끄고, 자동 제안 값으로 되돌리거나 비우면 다시 켠다
+    if (key === "title") { const v = (state.title || "").trim(); autoTitleOn = !v || v === autoTitle; }
+    renderCard(); renderSNS(); saveLocal();
   });
   bindText("#inTitle", "title");
   bindText("#inSubtitle", "subtitle");
@@ -2924,7 +2989,8 @@ function loadSample() {
   deals.forEach(d => { if (pick.includes(d.name)) d.selected = true; });
   state.deals = deals;
   resetListCap();
-  state.title = "안양 동안구 아파트 실거래가";
+  state.title = DEFAULT_TITLE;
+  autoTitle = DEFAULT_TITLE; autoTitleOn = true;
   state.subtitle = "2026년 11월 주요 거래";
   $("#inTitle").value = state.title;
   $("#inSubtitle").value = state.subtitle;
@@ -3536,10 +3602,10 @@ function sMakeCard() {
   }));
   state.deals = deals;
   state.bands = [];
-  if (!state.title || /아파트 실거래가$/.test(state.title)) {
-    const place = (PRESETS.find(p => p.code === sstate.code) || {}).name;
-    if (place) state.title = `${place.replace("시 ", " ")} 아파트 실거래가`;
-  }
+  // 제목 자동 제안 — 지역 + 단지명 필터 (직접 고친 제목은 유지)
+  const sPlace = placeLabel(sstate.code);
+  const sKw = (($("#sKw") && $("#sKw").value) || sstate.kw || "").trim();
+  if (sPlace || filterLabel(sKw)) setAutoTitle(autoCardTitle(sPlace, sKw));
   if (sstate.subtitle) state.subtitle = sstate.subtitle;
   $("#inTitle").value = state.title;
   $("#inSubtitle").value = state.subtitle;
@@ -4181,7 +4247,8 @@ function aMakeCard() {
   });
   state.deals = deals;
   state.bands = [];
-  state.title = `${astate.cmplx || "안양"} 아파트 실거래가`;
+  // 제목 자동 제안 — 지역(안양 동안구) + 단지명 (직접 고친 제목은 유지)
+  setAutoTitle(autoCardTitle("안양 동안구", astate.cmplx || ""));
   state.subtitle = `아실 동/호 실거래 · ${aPeriodLabel()}`;
   $("#inTitle").value = state.title;
   $("#inSubtitle").value = state.subtitle;
@@ -4621,7 +4688,9 @@ window.__app = {
   SBANDS, sBandOf, sKwTokens, sRangeLabel, sTogglePick,
   astate, aRender, aFiltered, aUnlock, aMakeCard, aSetMode, aLock, aRows: aBaseRows, aReady,
   aOrderOpen, aOrderClose, aOrderSave, aOrderDefault, aOrderMove, aOrderDraft: () => aOrderDraft.slice(),
-  aRawOrder, aSavedOrder, aMergeOrder, aApplyOrder, aWriteOrder, aClearOrder, ASIL_ORDER_STORE
+  aRawOrder, aSavedOrder, aMergeOrder, aApplyOrder, aWriteOrder, aClearOrder, ASIL_ORDER_STORE,
+  placeLabel, filterLabel, autoCardTitle, setAutoTitle, titlePlace, titleCity,
+  autoTitleState: () => ({ autoTitle, autoTitleOn })
 };
 
 document.addEventListener("DOMContentLoaded", init);
